@@ -1,0 +1,5 @@
+2019-02-07 19:39:15.847 DEBUG ValidationErrorsTest.conErros:15 - true
+2019-02-07 19:39:51.971 DEBUG ValidationErrorsTest.senErros:19 - false
+2019-02-07 19:41:50.573 DEBUG ValidationErrorsTest.conErros:15 - true
+2019-02-07 19:41:50.584 DEBUG Errors.showErrors:59 - HAI ERRO
+2019-02-07 19:46:04.872 DEBUG ValidationErrorsTest.senErros:23 - false

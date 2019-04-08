@@ -1,0 +1,383 @@
+body, html {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	background: #888;
+}
+
+#header {
+	position: relative;
+	height: 80px;
+	background: #14805e;
+	width: 100%;
+	color: white;
+}
+
+#logo {
+	font-family: fantasy;
+	position: absolute;
+	left: 30px;
+	top: 20px;
+	font-size: 1.5em;
+	display: inline-block;
+}
+
+#logo a {
+	color: white;
+	text-decoration: none;
+	font-size: 1.5em;
+}
+
+#languages {
+	font-size: 12px;
+	position: absolute;
+	left: 45%;
+	top: 35px;
+}
+
+#languages a {
+	color: white;
+	text-decoration: none;
+}
+
+#user-menu {
+	width: 400px;
+	height: 80px;
+	font-size: 10px;
+	display: inline-block;
+	float: right;
+	top: 0px;
+	right: 20px;
+	position: relative;
+	text-align: right;
+	display: inline-block;
+}
+
+#user-register {
+	position: absolute;
+	right: 15px;
+	top: 55px;
+}
+
+#user-register  a {
+	text-decoration: none;
+	color: #ffdf1b;
+}
+
+#user-register a : hover {
+	text-decoration: underline;
+	color: #ffdf1b;
+}
+
+#usuario a {
+	text-decoration: none;
+	color: #ffdf1b;
+}
+
+#usuario a : hover {
+	text-decoration: underline;
+	color: #ffdf1b;
+}
+
+#usuario {
+	position: absolute;
+	width: 130px;
+	height: 100px;
+	top: 15px;
+	right: 90px;
+}
+
+#usuario p {
+	display: inline-block;
+}
+
+#login {
+	position: absolute;
+	bottom: 20px;
+	width: 370px;
+	right: 0px;
+	top: 20px;
+}
+
+#desplegable {
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	top: 15px;
+	right: 0px;
+}
+
+#userimage {
+	width: 64px;
+	height: 64px;
+}
+
+#divbanco {
+	width: 200px;
+    min-height: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+}
+
+#login input {
+	background-color: #127052;
+	width: 160px;
+	height: 20px;
+	border: none;
+	color: #4acfa5;
+}
+
+#login input::placeholder {
+	color: #4acfa5;
+}
+
+#login button {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-weight: 800;
+	text-align: center;
+	min-width: 25px;
+	padding: 0 2px;
+	margin-left: 5px;
+	margin-top: 1px;
+	height: 23px;
+	background-color: #ddd;
+	color: #14805e;
+	font-size: 12px;
+	border-radius: 1px;
+	cursor: pointer;
+	outline: 1px solid transparent;
+	border: none;
+}
+
+#register-form {
+	display: block;
+	min-height: 80%;
+}
+
+#sports {
+	display: inline-block;
+	width: 15%;
+	float: left;
+	min-height: 80%;
+	background: #2d2d2d;
+}
+
+#divright {
+	display: inline-block;
+	width: 15%;
+	float: right;
+	min-height: 80%;
+	background: #2d2d2d;
+}
+
+#carrito {
+	font-size: 10px;
+	margin: 5px;
+	background: white;
+}
+
+.lineacarrito {
+	position: relative;
+	font-size: 10px;
+}
+
+.lineacarrito a {
+	position: absolute;
+	top: 0px;
+	right: 2px;
+	text-decoration: none;
+}
+
+.lineacarrito p {
+	padding-right: 40px;
+	display: inline-block;
+	margin-left: 2px;
+}
+
+.cuota {
+	right: 10px;
+	position: absolute;
+}
+
+#carrito input {
+	width: 50px;
+}
+
+#importe {
+	margin-left: 11px;
+}
+
+#sports a {
+	font-size: 12px;
+	text-decoration: none;
+	color: white;
+}
+
+#sports a : hover {
+	font-size: 12px;
+	text-decoration: none;
+	color: white;
+}
+
+#home {
+    background: #888;
+    display: block;
+    width: 70%;
+    min-height: 80%;
+    float: left;
+}
+
+#results {
+	background: #545454;
+}
+
+#results a {
+	text-decoration: none;
+	color: white;
+}
+
+#detalle {
+	position: relative;
+	width: 70%;
+	display: inline-block;
+}
+
+.titulodetalle {
+	position: relative;
+	width: 100%;
+	background: #14805e;
+	color: white;
+	height: 30px;
+	display: block;
+	top: 0px;
+	margin: 0px;
+	margin-top: 2px;
+}
+
+li, ul {
+	list-style: none;
+}
+
+#footer {
+	width: 100%;
+	background: darkgray;
+	clear: both;
+	position: relative;
+	min-height: 20%;
+	margin-top: 0px;
+	
+}
+
+.resultado {
+	display: inline-block;
+	width: 30%;
+	height: 30px;
+}
+
+.resultado p {
+	display: inline;
+}
+
+#findhistorial {
+	text-align: center;
+	width: 80%;
+	margin-top: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	color: white;
+}
+
+#findfecha {
+	margin-left: 10px;
+	display: inline;
+}
+
+#history {
+	min-height: 80%;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.apuestahistorial {
+	margin-top: 16px;
+	background: white;
+	padding: 0px 10px 1px;
+	position: relative;
+}
+
+.apuestahistorial p {
+	margin-top: 5px;
+}
+
+.fechaapuesta {
+	display: inline-block;
+}
+
+.idapuesta {
+	position: absolute;
+	top: 5px;
+	right: 10px;
+}
+
+.masdetalles {
+	float: right;
+	position: absolute;
+	bottom: 0px;
+	right: 10px;
+}
+
+.acertada {
+	color: green;
+}
+
+.fallada {
+	color: red;
+}
+
+/*Menu desplegable*/
+.menudes {
+	position: relative;
+	display: inline-block;
+}
+
+.menudes-contido {
+	display: none;
+	position: absolute;
+	background-color: #f1f1f1;
+	min-width: 150px;
+	overflow: auto;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+	right: -15px;
+	text-align: left;
+}
+
+.menudes-contido a {
+	color: black;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+}
+
+.dropbtn {
+	color: white;
+	padding: 0px;
+	font-size: 16px;
+	border: none;
+	cursor: pointer;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+	background-color: #2980B9;
+}
+
+.menudes a:hover {
+	background-color: #ddd;
+}
+
+.show {
+	display: block;
+}
