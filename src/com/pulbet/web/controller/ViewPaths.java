@@ -8,6 +8,7 @@ public class ViewPaths {
 	public static final String REGISTRO = "/html/registro-page.jsp";
 	public static final String RESULTADOS = "/html/results-page.jsp";
 	public static final String DETALLE = "html/detalle.jsp";
+	public static final String COMPETITIONS = "html/competitions.jsp";
 	public static final String CARRITO = "html/carrito.jsp";
 	public static final String HISTORY = "html/user/history-search.jsp";
 	public static final String EDITPROFILE = "html/user/edit-profile.jsp";

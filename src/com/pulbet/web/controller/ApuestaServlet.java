@@ -119,10 +119,17 @@ public class ApuestaServlet extends HttpServlet {
 
 			} else if (u == null){ 
 				errors.addError(ParameterNames.APUESTA, ErrorCodes.NOT_LOGGED);
-				request.setAttribute(AttributeNames.ERRORS, errors);	
+				request.setAttribute(AttributeNames.ERRORS, errors);			
+				
+				if(logger.isDebugEnabled()) {
+					logger.debug("Error creando apuesta");
+				}
 			} else if (u.getBanco()<importe) {
 				errors.addError(ParameterNames.APUESTA, ErrorCodes.NOT_ENOUGH_MONEY);
-				request.setAttribute(AttributeNames.ERRORS, errors);	
+				request.setAttribute(AttributeNames.ERRORS, errors);
+				if(logger.isDebugEnabled()) {
+					logger.debug("Error creando apuesta");
+				}
 			}
 						
 			target = ViewPaths.HOME;

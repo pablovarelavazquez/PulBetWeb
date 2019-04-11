@@ -41,29 +41,33 @@ public class LocaleFilter implements Filter {
 		HttpServletRequest httpRequest = ((HttpServletRequest) request);
 		HttpServletResponse httpResponse = ((HttpServletResponse) response);
 		
-		logger.debug("Estamos en locale filter");
+		
 
 		String idioma = (String) SessionManager.get(httpRequest, WebConstants.IDIOMA);
 		Locale locale = (Locale) SessionManager.get(httpRequest, WebConstants.USER_LOCALE);
-		if (StringUtils.isEmptyOrWhitespaceOnly(idioma)) {
+		
+		logger.debug("Sesion , idioma {} locale {}", idioma, locale);
+		
+		if (locale == null) {
 
 			// Primero intentamos inicializar el locale de cookie.
 			Cookie cookieLocale = CookieManager.getCookie(httpRequest, WebConstants.USER_LOCALE);
 			if (cookieLocale!=null) {
-				idioma = cookieLocale.getValue();
-
-				locale = new Locale(cookieLocale.getValue());
-				if (logger.isDebugEnabled()) {
-					logger.debug("Locale initialized from cookie: "+cookieLocale.getValue());
-				}				
+				//idioma = cookieLocale.getValue();
+				
+				locale = getLocale(cookieLocale.getValue());
+				if (locale!=null && logger.isDebugEnabled()) {
+					logger.debug("Locale initialized from cookie: "+locale);
+				}	
 			} else {
-
-				logger.debug("Locale por defecto.");
-
 				// En ultimo término, a modo de "por defecto", inicializamos a partir 
 				// del header Accept-Language de la request. 
 				// Más info: https://www.w3.org/International/questions/qa-accept-lang-locales
 				locale = getLocale(httpRequest);
+				if (locale!=null && logger.isDebugEnabled()) {
+					logger.debug("Locale initialized from header: "+locale);
+				}
+				
 			}
 
 			if (locale==null) {
@@ -73,6 +77,7 @@ public class LocaleFilter implements Filter {
 			}
 
 			idioma = LocaleManager.getIdioma(locale.toString());
+			
 			SessionManager.set(httpRequest, WebConstants.USER_LOCALE, locale);			
 			CookieManager.addCookie(httpResponse, WebConstants.USER_LOCALE, locale.toString(), "/", 365*24*60*60);
 
@@ -91,13 +96,15 @@ public class LocaleFilter implements Filter {
 	}
 
 
-	protected Locale getLocale(HttpServletRequest httpRequest) {
-			
+	protected Locale getLocale(HttpServletRequest httpRequest) {			
 		String acceptLanguageHeader = httpRequest.getHeader("Accept-Language");
-		
+		return getLocale(acceptLanguageHeader);		       
+	}
+	
+	protected Locale getLocale(String ranges) {
 		// Miramos cuales de los lenguajes establecidos por el usuario en su navegador
 		// son soportados por nuesetra web
-		List<Locale> matchedLocales = LocaleManager.getMatchedLocales(acceptLanguageHeader);
+		List<Locale> matchedLocales = LocaleManager.getMatchedLocales(ranges);
 		
 		Locale locale = null;
 		if (matchedLocales.size()>0) {
@@ -106,10 +113,10 @@ public class LocaleFilter implements Filter {
 				logger.debug("Matched "+matchedLocales.size()+" locales. Selected: "+locale);
 			}
 		} else {
-			logger.warn("No matched locale: "+acceptLanguageHeader);
+			logger.warn("No matched locale: "+ranges);
 		}
 		return locale;
-		       
+
 	}
 
 	public void destroy() {

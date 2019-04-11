@@ -16,5 +16,6 @@ public interface Actions {
 	public static final String EDITPROFILE = "editprofile";
 	public static final String INGRESAR = "ingresar";
 	public static final String RETIRAR = "retirar";
+	public static final String FIND_COMPETITION = "findCompetition";
 	
 }

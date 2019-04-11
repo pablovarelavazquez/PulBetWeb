@@ -50,4 +50,6 @@ public class ParameterNames {
 	
 	public static final String APUESTA = "apuesta";
 	
+	public static final String URL="url";
+	
 }

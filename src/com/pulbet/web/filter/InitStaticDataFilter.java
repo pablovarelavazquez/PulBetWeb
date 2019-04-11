@@ -48,7 +48,7 @@ public class InitStaticDataFilter implements Filter {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		
-		String idioma= (String) SessionManager.get(httpRequest, WebConstants.IDIOMA);
+		String idioma = (String) SessionManager.get(httpRequest, WebConstants.IDIOMA);
 		
 		logger.debug("Idioma {}", idioma);
 		
@@ -60,6 +60,10 @@ public class InitStaticDataFilter implements Filter {
 			
 			request.setAttribute("deportes", deportes);
 			request.setAttribute("eventos", eventos);
+			
+			logger.debug("Deportes {} | Eventos {}", deportes, eventos);
+			
+			
 		} catch (DataException e) {
 			e.printStackTrace();
 		}

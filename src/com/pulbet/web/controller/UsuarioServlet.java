@@ -193,6 +193,8 @@ public class UsuarioServlet extends HttpServlet {
 			
 			logger.debug("Estamos en usuario/change-locale");
 			
+			
+			
 			String localeName = request.getParameter(ParameterNames.LOCALE);
 			// Recordar que hay que validar... lo que nos envian, incluso en algo como esto.
 			// Buscamos entre los Locale soportados por la web:
@@ -208,8 +210,11 @@ public class UsuarioServlet extends HttpServlet {
 			String idioma = LocaleManager.getIdioma(newLocale.toString());			
 
 			SessionManager.set(request, WebConstants.IDIOMA, idioma);
+			
 			SessionManager.set(request, WebConstants.USER_LOCALE, newLocale);
+			
 			CookieManager.addCookie(response, WebConstants.IDIOMA, idioma, "/", 365*24*60*60);
+			
 			CookieManager.addCookie(response, WebConstants.USER_LOCALE, newLocale.toString(), "/", 365*24*60*60);
 			
 

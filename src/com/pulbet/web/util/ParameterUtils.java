@@ -1,6 +1,10 @@
 package com.pulbet.web.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
+
+import com.pulbet.web.controller.ConstantsValues;
 
 public class ParameterUtils {
 
@@ -20,4 +24,26 @@ public class ParameterUtils {
 		return sb.toString();
 	}
 	
+	public static String URLBuilder (String url, Map<String, String> valores) throws UnsupportedEncodingException {
+		int cont = 1;
+		StringBuilder urlBuilder = new StringBuilder();
+		urlBuilder.append(url);
+		for(String mapKey: valores.keySet()) {
+			if(cont == 1) urlBuilder.append(ConstantsValues.QUESTION_MARK);
+			urlBuilder.append(URLEncoder.encode(trimmer(mapKey), ConstantsValues.ENCODING))
+				.append(ConstantsValues.EQUAL)
+				.append(URLEncoder.encode(trimmer(valores.get(mapKey)), ConstantsValues.ENCODING));
+			if(cont != valores.size()) {
+				urlBuilder.append(ConstantsValues.AMPERSAND_URL);
+			}
+			cont++;
+		}
+		return urlBuilder.toString();
+	}
+	
+	public static String trimmer(String param) {
+		return param.trim();
+	}
+	
+		
 }

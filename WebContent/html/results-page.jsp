@@ -1,33 +1,15 @@
 <%@ page
 	import="com.pvv.pulbet.model.*, java.util.*,  com.pulbet.web.controller.* , com.pvv.pulbet.service.*"%>
 
-<div id="results">
 
-	<c:if test="${(not empty eventos) && (empty resultados)}">
-		<c:if test="${not empty eventos.getPage()}">
-			<ul>
-				<c:forEach var="e" items="${eventos.getPage()}">
-
-
-					<c:url var="urlDetalle" scope="page" value="evento">
-						<c:param name="action" value="<%=Actions.FIND_DETAIL%>" />
-						<c:param name="id" value="${e.idEvento}" />
-					</c:url>
-					<li><a href="${urlDetalle}">${e.getLocal().getNome()} vs
-							${e.getVisitante().getNome()} - ${e.getFecha()}</a></li>
-
-
-				</c:forEach>
-			</ul>
-		</c:if>
-	</c:if>
-
-	
-
+<div class="results">
 	<c:if test="${not empty resultados}">
-			<p><fmt:message key="resultados" bundle="${messages}"/></p>
+		<p>
+			<fmt:message key="resultados" bundle="${messages}" />
+		</p>
+
+
 		
-		<ul>
 			<c:forEach var="r" items="${resultados}">
 
 
@@ -35,20 +17,45 @@
 					<c:param name="action" value="<%=Actions.FIND_DETAIL%>" />
 					<c:param name="id" value="${r.idEvento}" />
 				</c:url>
-				<li><a href="${urlDetalle}">${r.getLocal().getNome()} vs
-						${r.getVisitante().getNome()} - ${r.getFecha()}</a></li>
+
+				<c:set var="mercado" scope="page" value="${r.getMercados().get(0)}" />
+				<c:set var="resultados" scope="page" value="${mercado.getResultados()}" />
+
+				<a class="titulodetalle" class="mercado"
+					href="${urlDetalle}">${r.getLocal().getNome()} vs
+						${r.getVisitante().getNome()} - ${r.getFecha()}</a>
+				<div class="mercado">
+					<p class="titulodetalle">${mercado.getNome()}</p>
+					<c:forEach var="resultado" items="${resultados}">
+
+						<c:url var="urlCuota" scope="page" value="carrito">
+							<c:param name="action" value="<%=Actions.ADD_CARRITO%>" />
+							<c:param name="idevento" value="${resultado.idEvento}" />
+							<c:param name="idresultado" value="${resultado.idResultado}" />
+						</c:url>
+						<div class="resultado">
+							<p>${resultado.getNombre()}</p>
+
+							<a href="${urlCuota}">${resultado.getCuota()}</a>
+						</div>
+					</c:forEach>
+				</div>
+
 			</c:forEach>
 
-		</ul>
+		
 
 
-<%-- 		<!-- Paxinacion -->
+		<!-- Paxinacion -->
 		<p>
 		<center>
-
-			<c:url var="urlBase" value="/transportista" scope="page">
-				<c:param name="action" value="search" />
-				<c:param name="nombre" value="${nombre}" />
+			<c:url var="urlBase" value="evento" scope="page">
+				<c:param name="action" value="<%=Actions.BUSCADOR%>" />
+				<c:param name="evento" value="${evento}" />
+				<c:param name="competicion" value="${competicion}" />
+				<c:param name="fecha" value="${fecha}" />
+				<c:param name="deporte" value="${deporte}" />
+				<c:param name="participante" value="${participante}" />
 				<!--  y asi todos los parametros de la busqueda anterior ... -->
 			</c:url>
 
@@ -89,11 +96,13 @@
 			<c:if test="${page < totalPages}">
 				&nbsp;&nbsp;		
 				<a href="${urlBase}&page=${page + 1}"> <fmt:message
-						key="Siguiente" bundle="${messages}" />
+						key="siguiente" bundle="${messages}" />
 				</a>
-			</c:if> --%>
+			</c:if>
 	</c:if>
 
-
 </div>
+
+
+
 
