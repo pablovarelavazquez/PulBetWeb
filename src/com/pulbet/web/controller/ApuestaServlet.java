@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.pulbet.web.model.Carrito;
 import com.pulbet.web.model.LineaCarrito;
+import com.pulbet.web.util.LocaleManager;
 import com.pulbet.web.util.ParameterUtils;
 import com.pulbet.web.util.SessionAttributeNames;
 import com.pulbet.web.util.SessionManager;
@@ -53,7 +55,8 @@ public class ApuestaServlet extends HttpServlet {
 			logger.debug(ParameterUtils.print(request.getParameterMap()));
 		}
 
-		String idioma= (String) SessionManager.get(request, WebConstants.IDIOMA);
+		Locale userLocale = (Locale) SessionManager.get(request, WebConstants.USER_LOCALE);
+		String idioma = LocaleManager.getIdioma(userLocale.toString());
 
 		Carrito c = (Carrito) SessionManager.get(request, SessionAttributeNames.CARRITO);
 		Usuario u = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
@@ -67,7 +70,6 @@ public class ApuestaServlet extends HttpServlet {
 			
 			Apuesta a = new Apuesta();
 			List<LineaApuesta> lineas = new ArrayList<LineaApuesta>();
-			List<LineaCarrito> lineasCarrito =  new ArrayList<LineaCarrito>();
 			
 			int count = 1;
 			double ganancias = 1.0;

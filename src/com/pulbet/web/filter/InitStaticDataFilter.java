@@ -2,6 +2,7 @@ package com.pulbet.web.filter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.pulbet.web.util.LocaleManager;
 import com.pulbet.web.util.SessionManager;
 import com.pulbet.web.util.WebConstants;
 import com.pvv.pulbet.exceptions.DataException;
@@ -48,7 +50,8 @@ public class InitStaticDataFilter implements Filter {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		
-		String idioma = (String) SessionManager.get(httpRequest, WebConstants.IDIOMA);
+		Locale userLocale = (Locale) SessionManager.get(httpRequest, WebConstants.USER_LOCALE);
+		String idioma = LocaleManager.getIdioma(userLocale.toString());
 		
 		logger.debug("Idioma {}", idioma);
 		

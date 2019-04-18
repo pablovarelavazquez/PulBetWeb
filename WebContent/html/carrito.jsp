@@ -33,16 +33,19 @@
 				acumulada = acumulada * l.getResultado().getCuota();
 			}
 %>
-	<p>
-		Cuota acumulada
-		<%= String.format("%.2f", acumulada)  %></p>
-
+	
 	<form action="<%=ControllerPaths.APUESTA%>">
 		<input type="hidden" name="<%=ParameterNames.ACTION%>"
-			value="<%=Actions.APOSTAR%>"> <label>Importe</label> <input
-			id="importe" name="<%=ParameterNames.IMPORTE%>" type="text"
-			value="1.0" required> <br> <label>Ganancias</label> <input
-			type="text" name="<%=ParameterNames.GANANCIAS%>" disabled> <br>
+			value="<%=Actions.APOSTAR%>"> 
+			<label>Cuota acumulada</label>
+			<input type="text" value="<%=String.format("%.2f", acumulada)%>"  id="acumulada" disabled>
+			<br> 
+			<label>Importe</label> 
+			<input id="importe" name="<%=ParameterNames.IMPORTE%>" type="text" value="1.0" required>
+			<br> 
+			<label>Ganancias</label> 
+			<input
+			type="text" name="<%=ParameterNames.GANANCIAS%>" id="ganancias" disabled> <br>
 		<button type="submit">Apostar</button>
 	</form>
 

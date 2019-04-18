@@ -6,5 +6,6 @@ import java.text.SimpleDateFormat;
 public class DateUtils {
 	
 	public static final DateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+	public static final DateFormat SHORT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	
 }

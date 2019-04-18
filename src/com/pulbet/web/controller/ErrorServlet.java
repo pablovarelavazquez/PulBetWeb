@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 @WebServlet("/error")
 public class ErrorServlet extends HttpServlet {
 	
-	private static Logger logger = LogManager.getLogger(EventoServlet.class);
+	private static Logger logger = LogManager.getLogger(ErrorServlet.class);
 	
     public ErrorServlet() {
         super();

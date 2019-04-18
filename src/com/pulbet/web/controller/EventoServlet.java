@@ -1,7 +1,6 @@
 package com.pulbet.web.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -18,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.pulbet.web.config.ConfigurationManager;
 import com.pulbet.web.config.ConfigurationParameterNames;
+import com.pulbet.web.util.LocaleManager;
 import com.pulbet.web.util.ParameterUtils;
 import com.pulbet.web.util.SessionManager;
 import com.pulbet.web.util.ValidationUtils;
@@ -69,24 +69,18 @@ public class EventoServlet extends HttpServlet {
 		boolean redirect = false;
 		Errors errors = new Errors(); 
 		
+		Map<String, String[]> mapa = new HashMap<String, String[]>(request.getParameterMap());
+		String url = "";
+		
 		Locale userLocale = (Locale) SessionManager.get(request, WebConstants.USER_LOCALE);
-		//String idioma = LocaleManager.getIdioma(userLocale.toString());
+		String idioma = LocaleManager.getIdioma(userLocale.toString());
 
 		if(Actions.BUSCADOR.equalsIgnoreCase(action)) {
-			
-		Map<String, String[]> mapa = new HashMap<String, String[]>(request.getParameterMap());
-		mapa.remove(AttributeNames.RESULTADOS);
-		mapa.remove(AttributeNames.TOTAL);
-		mapa.remove(AttributeNames.TOTAL_PAGES);
-		mapa.remove(AttributeNames.FIRST_PAGED_PAGES);
-		mapa.remove(AttributeNames.LAST_PAGED_PAGES);
-		
-			
-		String idioma= (String) SessionManager.get(request, WebConstants.IDIOMA);
+					
+		mapa.remove(ParameterNames.PAGE);
 		
 		EventoCriteria e = new EventoCriteria();
 		Results<Evento> results = null;
-		List<Evento> eventos = new ArrayList<Evento>();
 
 
 		//Recuperamos parametros
@@ -106,6 +100,7 @@ public class EventoServlet extends HttpServlet {
 
 		try {
 			logger.debug(errors.hasErrors());
+			
 			if(!errors.hasErrors()) {
 				
 				int page = WebUtils.
@@ -128,11 +123,10 @@ public class EventoServlet extends HttpServlet {
 				request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
 				
 				//parametros de busqueda actuales
-				request.setAttribute(ParameterNames.EVENTO, idEvento);
-				request.setAttribute(ParameterNames.COMPETICION, competicion);
-				request.setAttribute(ParameterNames.FECHA, hasta);
-				request.setAttribute(ParameterNames.DEPORTE, deporte);
-				request.setAttribute(ParameterNames.PARTICIPANTE, participante);
+				
+				url = ParameterUtils.URLBuilder(url, mapa);
+				request.setAttribute(ParameterNames.URL, url);
+				
 				
 			} 
 			
@@ -152,7 +146,6 @@ public class EventoServlet extends HttpServlet {
 		} else if (Actions.FIND_DETAIL.equalsIgnoreCase(action)) {
 			String idParamValue = request.getParameter(ParameterNames.ID);
 			Long id = Long.valueOf(idParamValue);
-			String idioma = (String) SessionManager.get(request,WebConstants.IDIOMA);
 			Evento evento;
 			
 			try {
@@ -170,7 +163,6 @@ public class EventoServlet extends HttpServlet {
 			
 			String idDeporte = request.getParameter(ParameterNames.ID);
 			Long id = Long.valueOf(idDeporte);
-			String idioma = (String) SessionManager.get(request,WebConstants.IDIOMA);
 			List<Competicion> competiciones;
 			
 			try {

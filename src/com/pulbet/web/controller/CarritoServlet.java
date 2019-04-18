@@ -1,8 +1,12 @@
 package com.pulbet.web.controller;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.pulbet.web.model.Carrito;
 import com.pulbet.web.model.LineaCarrito;
+import com.pulbet.web.util.LocaleManager;
 import com.pulbet.web.util.ParameterUtils;
 import com.pulbet.web.util.SessionAttributeNames;
 import com.pulbet.web.util.SessionManager;
@@ -47,7 +52,11 @@ public class CarritoServlet extends HttpServlet {
 			logger.debug(ParameterUtils.print(request.getParameterMap()));
 		}
 
-		String idioma= (String) SessionManager.get(request, WebConstants.IDIOMA);
+		Locale userLocale = (Locale) SessionManager.get(request, WebConstants.USER_LOCALE);
+		String idioma = LocaleManager.getIdioma(userLocale.toString());
+		
+		Map<String, String[]> mapa = new HashMap<String, String[]>(request.getParameterMap());
+		String url = "";
 
 		Carrito c = (Carrito) SessionManager.get(request, SessionAttributeNames.CARRITO);
 
@@ -57,11 +66,12 @@ public class CarritoServlet extends HttpServlet {
 		Errors errors = new Errors(); 
 
 		if(Actions.ADD_CARRITO.equalsIgnoreCase(action)) {
-
+			
 			String id  = request.getParameter(ParameterNames.ID_EVENTO);
 			Long idEvento =  Long.valueOf(id);
 			id = request.getParameter(ParameterNames.ID_RESULTADO);
 			Long idResultado =  Long.valueOf(id);
+			
 
 			Evento e;
 			Resultado r;
@@ -100,9 +110,30 @@ public class CarritoServlet extends HttpServlet {
 			} catch (DataException e1) {
 				e1.printStackTrace();
 			}
-
+			
+			mapa.remove(ParameterNames.ACTION);
+			mapa.remove(ParameterNames.ID_EVENTO);
+			mapa.remove(ParameterNames.ID_RESULTADO);
+			
+			url = ParameterUtils.URLBuilder(url, mapa);
+			
+			if(mapa.get(ParameterNames.URL) != null){
+				
+//				if(request.getHeader("referer").contains(URLDecoder.decode(mapa.get(ParameterNames.URL)[0],"UTF-8"))){
+//					logger.debug("IEEEEEEEEEEEEEEEEEEEEEEEEE truee");
+//					target = request.getHeader("referer");
+//				} else {
+//					logger.debug("IEEEEEEEEEEEEEEEEEEEEEEEEE false");
+//					target = request.getHeader("referer")+URLDecoder.decode(mapa.get(ParameterNames.URL)[0],"UTF-8");
+//				}
+				
+				target = request.getHeader("referer")+URLDecoder.decode(mapa.get(ParameterNames.URL)[0],"UTF-8");
+				
+			} else {
 			target = request.getHeader("referer");
+			}
 			redirect = true;
+			
 
 		} else if (Actions.DEL_CARRITO.equalsIgnoreCase(action)){
 

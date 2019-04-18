@@ -3,6 +3,7 @@ package com.pulbet.web.controller;
 public interface Actions {
 	
 	public static final String REGISTRO = "registro";
+	public static final String PRE_REGISTRO = "preRegistro";
 	public static final String BUSCADOR = "buscador";
 	public static final String LOGIN = "login";
 	public static final String LOGOUT = "logout";

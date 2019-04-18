@@ -43,10 +43,9 @@ public class LocaleFilter implements Filter {
 		
 		
 
-		String idioma = (String) SessionManager.get(httpRequest, WebConstants.IDIOMA);
 		Locale locale = (Locale) SessionManager.get(httpRequest, WebConstants.USER_LOCALE);
 		
-		logger.debug("Sesion , idioma {} locale {}", idioma, locale);
+		logger.debug("Sesion locale {}",locale);
 		
 		if (locale == null) {
 
@@ -76,15 +75,8 @@ public class LocaleFilter implements Filter {
 				logger.warn("Using default locale: "+locale);			
 			}
 
-			idioma = LocaleManager.getIdioma(locale.toString());
-			
 			SessionManager.set(httpRequest, WebConstants.USER_LOCALE, locale);			
 			CookieManager.addCookie(httpResponse, WebConstants.USER_LOCALE, locale.toString(), "/", 365*24*60*60);
-
-			SessionManager.set(httpRequest, WebConstants.IDIOMA, idioma);			
-			CookieManager.addCookie(httpResponse, WebConstants.IDIOMA, idioma, "/", 365*24*60*60);
-			
-			
 		}
 		
 		// Continuar la invocacion de la cadena de responsabilidad.

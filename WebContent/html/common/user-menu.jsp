@@ -3,9 +3,9 @@
 	import="java.util.List, com.pulbet.web.util.* , com.pulbet.web.controller.*"%>
 <div id="user-menu">
 
-<%
-	Usuario u = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
-%>
+	<%
+		Usuario u = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
+	%>
 
 	<c:choose>
 		<c:when test="${empty sessionScope['user']}">
@@ -38,26 +38,32 @@
 			</div>
 
 			<div id="user-register">
-				<a href="<%=request.getContextPath()%><%=ViewPaths.REGISTRO%>">
-					Registro </a>
+				<a href="<%=ControllerPaths.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRE_REGISTRO%>">
+					Registro
+				</a>
 			</div>
 		</c:when>
 
 		<c:otherwise>
 			<!-- usuario autenticado -->
 			<div id="usuario">
-				<p>Hola ${sessionScope['user'].getNome()}</p>
-				<a href="<%=request.getContextPath()%>/usuario?action=logout"
-					id="salir"> Salir </a>
-				<p>${sessionScope['user'].getBanco()} euros</p>
+				<div id="salir">
+					<p>Hola ${sessionScope['user'].getNome()}</p>
+					<a href="<%=request.getContextPath()%>/usuario?action=logout">
+						Salir </a>
+				</div>
+				<div id="ingresar">
+					<p>${sessionScope['user'].getBanco()}euros</p>
 
-				<c:if test="${sessionScope['user'].getBanco() <= 0.0}">
+					<c:if
+						test="${sessionScope['user'].getBanco() <= 0.0 || empty sessionScope['user'].getBanco()}">
 
-					<a
-						href="<%=request.getContextPath() + "/"%><%=ViewPaths.INGRESAR%>"
-						id="ingresar"> Ingresar </a>
+						<a
+							href="<%=request.getContextPath() + "/"%><%=ViewPaths.INGRESAR%>"
+							> Ingresar </a>
 
-				</c:if>
+					</c:if>
+				</div>
 
 			</div>
 

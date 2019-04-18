@@ -52,7 +52,7 @@
 						%><li><%=error%></li><%
 					}
 		%>
-		<input name="fnac" type="text" placeholder="Fecha Nacimiento">
+		<input name="fnac" type="date" placeholder="Fecha Nacimiento">
 						<%
 					parameterErrors = errors.showErrors(ParameterNames.FECHA_NACIMIENTO);
 					for (String error: parameterErrors) {
@@ -93,13 +93,24 @@
 						%><li><%=error%></li><%
 					}
 		%>
-		<input name="provincia" type="text" placeholder="Provincia">
-						<%
-					parameterErrors = errors.showErrors(ParameterNames.PROVINCIA);
-					for (String error: parameterErrors) {
-						%><li><%=error%></li><%
-					}
-		%>
+		
+		<select name="pais" id="paises">
+		<c:forEach var="p" items="${paises}">
+			<c:if test="${p.getIdPais() == 34}">
+				<option value="${p.getIdPais()}" selected>${p.getNome()}</option>
+			</c:if>
+			<c:if test="${p.getIdPais() != 34}">
+				<option value="${p.getIdPais()}">${p.getNome()}</option>
+			</c:if>
+		</c:forEach>
+		</select>
+		
+		<select name="provincia" id="provincias">
+		<c:forEach var="p" items="${provincias}">
+			<option value="${p.getIdProvincia()}">${p.getNome()}</option>
+		</c:forEach>
+		</select>
+		
 		<input name="calle" type="text" placeholder="Calle">
 						<%
 					parameterErrors = errors.showErrors(ParameterNames.CALLE);

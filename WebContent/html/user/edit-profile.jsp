@@ -6,8 +6,6 @@
 
 <%
 	Usuario usuario = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
-
-			
 %>
 
 
@@ -69,7 +67,7 @@
 					}
 		%>
 		<label>Fecha de Nacimiento: </label>
-		<input name="fnac" type="text" placeholder="Fecha Nacimiento" value="<%=usuario.getFechaNacimiento()%>">
+		<input name="fnac" type="date" placeholder="Fecha Nacimiento" value="<%=u.getFechaNacimiento()%>">
 						<%
 					parameterErrors = errors.showErrors(ParameterNames.FECHA_NACIMIENTO);
 					for (String error: parameterErrors) {

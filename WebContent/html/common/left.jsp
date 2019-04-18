@@ -48,12 +48,12 @@
 		<ul>
 			<c:forEach items="${deportes}" var="d">
 			
-			<c:url var="url" scope="page" value="evento">
+			<c:url var="urlComp" scope="page" value="evento">
 					<c:param name="action" value="<%=Actions.FIND_COMPETITION%>"/>
 					<c:param name="id" value="${d.idDeporte}" />
 			</c:url>
 			
-				<li><a href="${url}">${d.getNome()}</a></li>
+				<li><a href="${urlComp}">${d.getNome()}</a></li>
 			</c:forEach>
 		</ul>
 	</c:if>

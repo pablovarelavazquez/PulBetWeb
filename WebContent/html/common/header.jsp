@@ -18,6 +18,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/web.css" />
+<script src="<%=request.getContextPath()%>/javascript/jquery-3.3.1.min.js" type="text/javascript"></script> 
 <script type="text/javascript" src="<%=request.getContextPath()%>/javascript/web.js"></script>
 
 

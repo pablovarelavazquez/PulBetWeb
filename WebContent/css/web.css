@@ -65,6 +65,14 @@ body, html {
 	color: #ffdf1b;
 }
 
+#salir{
+	display: block;
+}
+
+#ingresar{
+	display: block;
+}
+
 #user-register a : hover {
 	text-decoration: underline;
 	color: #ffdf1b;

@@ -26,11 +26,6 @@ public class LocaleManager {
 		idiomas.put("es_ES", "ESP");
 		idiomas.put("en_GB", "ENG");
 		idiomas.put("gl_ES", "GAL");
-
-		idiomas.put("es_es", "ESP");
-		idiomas.put("en_gb", "ENG");
-		idiomas.put("gl_es", "GAL");
-
 	}
 
 	private static Logger logger = LogManager.getLogger(LocaleManager.class.getName());
