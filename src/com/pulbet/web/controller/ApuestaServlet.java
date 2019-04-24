@@ -106,9 +106,9 @@ public class ApuestaServlet extends HttpServlet {
 					u = usuarioService.findById(u.getIdUsuario());
 
 				} catch (DuplicateInstanceException e) {
-					e.printStackTrace();
+					logger.warn(e.getMessage(),e);
 				} catch (DataException e) {
-					e.printStackTrace();
+					logger.warn(e.getMessage(),e);
 				}
 				
 				//mail de apuesta realizada
@@ -117,6 +117,7 @@ public class ApuestaServlet extends HttpServlet {
 				//c.setLineas(lineasCarrito);
 				
 				SessionManager.set(request, SessionAttributeNames.USER, u);
+				target="";
 				redirect = true;
 
 			} else if (u == null){ 

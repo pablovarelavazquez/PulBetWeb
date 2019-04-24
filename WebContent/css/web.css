@@ -15,18 +15,14 @@ body, html {
 }
 
 #logo {
-	font-family: fantasy;
-	position: absolute;
-	left: 30px;
-	top: 20px;
-	font-size: 1.5em;
-	display: inline-block;
+    position: absolute;
+    left: 10px;
+    top: 0px;
+    display: inline-block;
 }
 
-#logo a {
-	color: white;
-	text-decoration: none;
-	font-size: 1.5em;
+#logo a img {
+	width: 150px;
 }
 
 #languages {
@@ -56,7 +52,7 @@ body, html {
 
 #user-register {
 	position: absolute;
-	right: 15px;
+	right: 200px;
 	top: 55px;
 }
 
@@ -65,11 +61,24 @@ body, html {
 	color: #ffdf1b;
 }
 
-#salir{
+#remember {
+	display: inline-block;
+	position: relative;
+	right: 24px;
+	top: 6px;
+	color: #ffdf1b;
+}
+
+#rememberinput {
+	width: 12px;
+	height: 12px;
+}
+
+#salir {
 	display: block;
 }
 
-#ingresar{
+#ingresar {
 	display: block;
 }
 
@@ -90,10 +99,11 @@ body, html {
 
 #usuario {
 	position: absolute;
-	width: 130px;
+	width: 200px;
 	height: 100px;
 	top: 15px;
 	right: 90px;
+	text-align: right
 }
 
 #usuario p {
@@ -123,13 +133,13 @@ body, html {
 
 #divbanco {
 	width: 200px;
-    min-height: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 20px;
+	min-height: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
 }
 
-#login input {
+.logininput {
 	background-color: #127052;
 	width: 160px;
 	height: 20px;
@@ -164,7 +174,11 @@ body, html {
 	min-height: 80%;
 }
 
-#left{
+#login-form {
+	min-height: 80%;
+}
+
+#left {
 	display: inline-block;
 	width: 15%;
 	float: left;
@@ -172,7 +186,7 @@ body, html {
 	background: #2d2d2d;
 }
 
-#participanteseacrh input{
+#participanteseacrh input {
 	width: 120px;
 }
 
@@ -234,11 +248,11 @@ body, html {
 }
 
 #home {
-    background: #888;
-    display: block;
-    width: 70%;
-    min-height: 80%;
-    float: left;
+	background: #888;
+	display: block;
+	width: 70%;
+	min-height: 80%;
+	float: left;
 }
 
 .results {
@@ -254,6 +268,10 @@ body, html {
 	text-decoration: none;
 	color: white;
 	display: block;
+}
+
+.cuota{
+	position: inherit;
 }
 
 #detalle {
@@ -285,7 +303,6 @@ li, ul {
 	position: relative;
 	min-height: 15%;
 	margin-top: 0px;
-	
 }
 
 .resultado {

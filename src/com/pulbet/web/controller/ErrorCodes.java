@@ -13,7 +13,11 @@ public interface ErrorCodes {
 	public static final String DUPLICATE_EVENT = "DUPLICATE_EVENT";
 	
 	public static final String NOT_ENOUGH_MONEY = "NOT_ENOUGH_MONEY";
+	public static final String TOO_MUCH_MONEY = "TOO_MUCH_MONEY";
 	
 	public static final String NOT_LOGGED = "NOT_LOGGED";
+	
+	public static final String NOT_EQUALS = "NOT_EQUALS";
+	public static final String NOT_CORRECT = "NOT_CORRECT";
 	
 }

@@ -14,9 +14,13 @@ public interface Actions {
 	public static final String APOSTAR = "apostar";
 	public static final String HISTORY = "history";
 	public static final String OPENBETS = "openbets";
+	public static final String PRE_EDIT = "preEdit";
 	public static final String EDITPROFILE = "editprofile";
 	public static final String INGRESAR = "ingresar";
 	public static final String RETIRAR = "retirar";
+	public static final String REMEMBERME = "rememberme";
+	public static final String CLOSE_ACCOUNT = "closeaccount";
+	public static final String CHANGE_PASSWORD = "changepassword";
 	public static final String FIND_COMPETITION = "findCompetition";
 	
 }

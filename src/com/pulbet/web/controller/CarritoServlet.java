@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.pulbet.web.model.Carrito;
 import com.pulbet.web.model.LineaCarrito;
+import com.pulbet.web.util.HttpUtils;
 import com.pulbet.web.util.LocaleManager;
 import com.pulbet.web.util.ParameterUtils;
 import com.pulbet.web.util.SessionAttributeNames;
@@ -39,7 +40,7 @@ public class CarritoServlet extends HttpServlet {
 
 	private EventoService eventoService = null;
 	private ResultadoService resultadoService =  null;
-	private static Logger logger = LogManager.getLogger(EventoServlet.class);
+	private static Logger logger = LogManager.getLogger(CarritoServlet.class);
 
 	public CarritoServlet() {
 		eventoService = new EventoServiceImpl();
@@ -106,34 +107,20 @@ public class CarritoServlet extends HttpServlet {
 				}
 
 			} catch (InstanceNotFoundException e1) {
-				e1.printStackTrace();
+				logger.warn(e1.getMessage(),e1);
 			} catch (DataException e1) {
-				e1.printStackTrace();
+				logger.warn(e1.getMessage(),e1);
 			}
 			
-			mapa.remove(ParameterNames.ACTION);
-			mapa.remove(ParameterNames.ID_EVENTO);
-			mapa.remove(ParameterNames.ID_RESULTADO);
-			
-			url = ParameterUtils.URLBuilder(url, mapa);
-			
-			if(mapa.get(ParameterNames.URL) != null){
-				
-//				if(request.getHeader("referer").contains(URLDecoder.decode(mapa.get(ParameterNames.URL)[0],"UTF-8"))){
-//					logger.debug("IEEEEEEEEEEEEEEEEEEEEEEEEE truee");
-//					target = request.getHeader("referer");
-//				} else {
-//					logger.debug("IEEEEEEEEEEEEEEEEEEEEEEEEE false");
-//					target = request.getHeader("referer")+URLDecoder.decode(mapa.get(ParameterNames.URL)[0],"UTF-8");
-//				}
-				
-				target = request.getHeader("referer")+URLDecoder.decode(mapa.get(ParameterNames.URL)[0],"UTF-8");
+			if((mapa.get(ParameterNames.URL)!=null) && !(mapa.get(ParameterNames.URL)[0].isEmpty())) {
+				url = HttpUtils.createCallbackURL(request, mapa.get(ParameterNames.URL)[0]);
+				target = url;
 				
 			} else {
-			target = request.getHeader("referer");
+				target = request.getHeader("referer");
 			}
-			redirect = true;
 			
+			redirect = true;
 
 		} else if (Actions.DEL_CARRITO.equalsIgnoreCase(action)){
 
@@ -145,7 +132,7 @@ public class CarritoServlet extends HttpServlet {
 			List<LineaCarrito> lineasNuevas = new ArrayList<LineaCarrito>();
 
 			for (LineaCarrito lc : c.getLineas()) {
-				if (!(lc.getEvento().getIdDeporte() == idEvento) && !(lc.getResultado().getIdResultado() == idResultado)) {
+				if (!(lc.getEvento().getIdEvento() == idEvento && lc.getResultado().getIdResultado() == idResultado)) {
 					lineasNuevas.add(lc);
 				}
 			}

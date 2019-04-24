@@ -1,5 +1,6 @@
 package com.pulbet.web.util;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -55,6 +56,7 @@ public class ValidationUtils {
 
 			if(!isNifNie(s)) {
 				errors.addError(clave, ErrorCodes.NOT_VALID_FORMAT);
+				return null;
 			}
 
 			return s;
@@ -69,8 +71,29 @@ public class ValidationUtils {
 		
 	}
 	
+	public static String ibanValidator(String param, Errors errors, String clave, Boolean mandatory) {
+		String s = null; 
 
+		if(!StringUtils.isEmptyOrWhitespaceOnly(param)) {
+			s = param.trim();
 
+			if(!ibanTest(param)) {
+				errors.addError(clave, ErrorCodes.NOT_VALID_FORMAT);
+				return null;
+			}
+
+			return s;
+		} else {
+			if(mandatory) {
+				errors.addError(clave, ErrorCodes.MANDATORY_PARAMETER);
+				logger.debug("Añadido error. Clave:{} Codigo_Error:{}", clave, ErrorCodes.MANDATORY_PARAMETER);
+			}
+			return null;
+		}
+
+		
+	}
+	
 	public static String namesOnlyLettersValidator(String param, Errors errors, String clave, Boolean mandatory) {
 
 		String s = null; 
@@ -213,6 +236,31 @@ public class ValidationUtils {
 
 	} 
 
+	public static Double doubleValidator(String param, Errors errors, String clave, Boolean mandatory) {
+
+		Double d = null;
+		try {
+
+			if(!StringUtils.isEmptyOrWhitespaceOnly(param)) {
+				d = Double.parseDouble(param.trim());
+				return d;
+			} else {
+				if(mandatory) {
+					errors.addError(clave, ErrorCodes.MANDATORY_PARAMETER);
+					logger.debug("Añadido error. Clave:{} Codigo_Error:{}", clave, ErrorCodes.MANDATORY_PARAMETER);
+				}
+				return null;
+			}
+		} catch (NumberFormatException ex) {
+			logger.warn(ex.getMessage(), ex);
+			errors.addError(clave, ErrorCodes.NOT_VALID_FORMAT); 
+			logger.debug("Añadido error. Clave:{} Codigo_Error:{}", clave, ErrorCodes.NOT_VALID_FORMAT);
+			return null;
+		}
+
+	} 
+
+	
 	public static Date dateValidator(String param, Errors errors, String clave, Boolean mandatory) {
 
 		Date d = null;
@@ -281,5 +329,35 @@ public class ValidationUtils {
 		else
 			return false;
 	}
+	
+	 	public static final int IBANNUMBER_MIN_SIZE = 15;
+	    public static final int IBANNUMBER_MAX_SIZE = 34;
+	    public static final BigInteger IBANNUMBER_MAGIC_NUMBER = new BigInteger("97");
+	    
+	    
+
+	    public static boolean ibanTest(String accountNumber) {
+	        String newAccountNumber = accountNumber.trim();
+
+	        // Check that the total IBAN length is correct as per the country. If not, the IBAN is invalid. We could also check
+	        // for specific length according to country, but for now we won't
+	        if (newAccountNumber.length() < IBANNUMBER_MIN_SIZE || newAccountNumber.length() > IBANNUMBER_MAX_SIZE) {
+	            return false;
+	        }
+
+	        // Move the four initial characters to the end of the string.
+	        newAccountNumber = newAccountNumber.substring(4) + newAccountNumber.substring(0, 4);
+
+	        // Replace each letter in the string with two digits, thereby expanding the string, where A = 10, B = 11, ..., Z = 35.
+	        StringBuilder numericAccountNumber = new StringBuilder();
+	        for (int i = 0;i < newAccountNumber.length();i++) {
+	            numericAccountNumber.append(Character.getNumericValue(newAccountNumber.charAt(i)));
+	        }
+
+	        // Interpret the string as a decimal integer and compute the remainder of that number on division by 97.
+	        BigInteger ibanNumber = new BigInteger(numericAccountNumber.toString());
+	        return ibanNumber.mod(IBANNUMBER_MAGIC_NUMBER).intValue() == 1;
+
+	    }
 
 }

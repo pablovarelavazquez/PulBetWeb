@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.pulbet.web.config.ConfigurationManager;
 import com.pulbet.web.config.ConfigurationParameterNames;
+import com.pulbet.web.util.HttpUtils;
 import com.pulbet.web.util.LocaleManager;
 import com.pulbet.web.util.ParameterUtils;
 import com.pulbet.web.util.SessionManager;
@@ -76,9 +77,16 @@ public class EventoServlet extends HttpServlet {
 		String idioma = LocaleManager.getIdioma(userLocale.toString());
 
 		if(Actions.BUSCADOR.equalsIgnoreCase(action)) {
-					
-		mapa.remove(ParameterNames.PAGE);
 		
+		String pageValue = null;
+		Integer page = null;
+		if(mapa.get(ParameterNames.PAGE)!=null) {
+			pageValue = mapa.get(ParameterNames.PAGE)[0];	
+			page = Integer.valueOf(pageValue);
+		}
+
+		mapa.remove(ParameterNames.PAGE);
+
 		EventoCriteria e = new EventoCriteria();
 		Results<Evento> results = null;
 
@@ -103,7 +111,7 @@ public class EventoServlet extends HttpServlet {
 			
 			if(!errors.hasErrors()) {
 				
-				int page = WebUtils.
+				page = WebUtils.
 						getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
 				
 				results = eventoService.findByCriteria(e,(page-1)*pageSize+1,pageSize,idioma);
@@ -122,12 +130,6 @@ public class EventoServlet extends HttpServlet {
 				request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
 				request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
 				
-				//parametros de busqueda actuales
-				
-				url = ParameterUtils.URLBuilder(url, mapa);
-				request.setAttribute(ParameterNames.URL, url);
-				
-				
 			} 
 			
 			if (errors.hasErrors()) {	
@@ -136,11 +138,15 @@ public class EventoServlet extends HttpServlet {
 			}
 
 		} catch (DataException ex) {
-			ex.printStackTrace();
+			logger.warn(ex.getMessage(),ex);
 			
 		} finally {
+			//parametros de busqueda actuales
+			url = HttpUtils.createLinkToSelf(null, mapa);
+			
+			request.setAttribute(ParameterNames.URL, url);
+			request.setAttribute(ParameterNames.PAGE, page);
 			target=ViewPaths.HOME;
-			//redirect=true;
 		}
 		
 		} else if (Actions.FIND_DETAIL.equalsIgnoreCase(action)) {
@@ -152,9 +158,9 @@ public class EventoServlet extends HttpServlet {
 				evento = eventoService.findById(id,idioma);
 				request.setAttribute(AttributeNames.EVENTO, evento);
 			} catch (InstanceNotFoundException e) {
-				e.printStackTrace();
+				logger.warn(e.getMessage(),e);
 			} catch (DataException e) {
-				e.printStackTrace();
+				logger.warn(e.getMessage(),e);
 			}			
 			
 			
@@ -169,11 +175,15 @@ public class EventoServlet extends HttpServlet {
 				competiciones = competicionService.findByDeporte(id);
 				request.setAttribute(AttributeNames.COMPETICIONES, competiciones);
 			} catch (DataException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.warn(e.getMessage(),e);
 			} 
 			
 			target = ViewPaths.HOME;
+		}else {
+			logger.error("Action desconocida");
+			logger.debug("Erro 404 - IP : "+ request.getRemoteAddr() +" - URI ");
+			target = ViewPaths.ERROR_404;
+			redirect =  true;
 		}
 		
 		if(redirect) {

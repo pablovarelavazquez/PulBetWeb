@@ -28,15 +28,15 @@
 					<p class="titulodetalle">${mercado.getNome()}</p>
 					<c:forEach var="resultado" items="${resultados}">
 
-						<c:url var="urlCuota" scope="page" value="carrito">
+<%-- 						<c:url var="urlCuota" scope="page" value="carrito">
 							<c:param name="action" value="<%=Actions.ADD_CARRITO%>" />
 							<c:param name="idevento" value="${resultado.idEvento}" />
 							<c:param name="idresultado" value="${resultado.idResultado}" />
-						</c:url>
+						</c:url> --%>
 						<div class="resultado">
 							<p>${resultado.getNombre()}</p>
 
-							<a href="${urlCuota}">${resultado.getCuota()}</a>
+							<a class="cuota" data-evento="${resultado.idEvento}" data-resultado="${resultado.idResultado}">${resultado.getCuota()}</a>
 						</div>
 					</c:forEach>
 				</div>

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,17 +22,23 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mysql.cj.util.StringUtils;
+import com.pulbet.web.config.ConfigurationManager;
+import com.pulbet.web.config.ConfigurationParameterNames;
 import com.pulbet.web.model.Carrito;
 import com.pulbet.web.model.LineaCarrito;
 import com.pulbet.web.util.CookieManager;
+import com.pulbet.web.util.HttpUtils;
 import com.pulbet.web.util.LocaleManager;
 import com.pulbet.web.util.ParameterUtils;
 import com.pulbet.web.util.SessionAttributeNames;
 import com.pulbet.web.util.SessionManager;
 import com.pulbet.web.util.ValidationUtils;
 import com.pulbet.web.util.WebConstants;
+import com.pulbet.web.util.WebUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.exceptions.MailException;
 import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.model.Direccion;
@@ -50,9 +57,18 @@ import com.pvv.pulbet.service.impl.BancoServiceImpl;
 import com.pvv.pulbet.service.impl.PaisServiceImpl;
 import com.pvv.pulbet.service.impl.ProvinciaServiceImpl;
 import com.pvv.pulbet.service.impl.UsuarioServiceImpl;
+import com.pvv.pulbet.util.PasswordEncryptionUtil;
 
 @WebServlet("/usuario")
 public class UsuarioServlet extends HttpServlet {
+
+	private static int pageSize = Integer.valueOf(
+			ConfigurationManager.getInstance().getParameter(
+					ConfigurationParameterNames.RESULTS_PAGE_SIZE_DEFAULT)); 
+
+	private static int pagingPageCount = Integer.valueOf(
+			ConfigurationManager.getInstance().getParameter(
+					ConfigurationParameterNames.RESULTS_PAGING_PAGE_COUNT)); 
 
 	private static Logger logger = LogManager.getLogger(UsuarioServlet.class);
 	private UsuarioService usuarioService = null;
@@ -96,7 +112,8 @@ public class UsuarioServlet extends HttpServlet {
 			String password = request.getParameter(ParameterNames.PASSWORD);
 
 			//Validamos paramtros
-
+			password = ValidationUtils.passwordValidator(password,errors,ParameterNames.PASSWORD, true);
+			email = ValidationUtils.emailValidator(email,errors,ParameterNames.REG_EMAIL, true);
 
 			Usuario u = null;
 
@@ -104,7 +121,7 @@ public class UsuarioServlet extends HttpServlet {
 				try {
 					u = usuarioService.login(email, password);
 				} catch (DataException e) {
-					e.printStackTrace();
+					logger.warn(e.getMessage(),e);
 				}
 			}
 
@@ -117,10 +134,11 @@ public class UsuarioServlet extends HttpServlet {
 					logger.debug("Autenticacion fallida: {}", errors);
 				}
 				request.setAttribute(AttributeNames.ERRORS, errors);				
-				target = ViewPaths.HOME;				
+				target = ViewPaths.LOGIN;				
 			} else {				
 				SessionManager.set(request, SessionAttributeNames.USER, u);		
-				target = ViewPaths.HOME;				
+				target = "";
+				redirect = true;
 			}
 		}else if( Actions.LOGOUT.equalsIgnoreCase(action)) {
 
@@ -134,16 +152,63 @@ public class UsuarioServlet extends HttpServlet {
 			target = "";
 			redirect = true;
 
-		} else if (Actions.PRE_REGISTRO.equalsIgnoreCase(action)){
+		} else if( Actions.CLOSE_ACCOUNT.equalsIgnoreCase(action)) {
+
+			Usuario u = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
+
+			try {
+
+				if(u.getBanco()>0.0) {
+					errors.addError(ParameterNames.ACTION, ErrorCodes.TOO_MUCH_MONEY);
+					request.setAttribute(AttributeNames.ERRORS, errors);
+					target = ViewPaths.RETIRAR;
+				}else {
+					usuarioService.delete(u.getIdUsuario());
+					SessionManager.set(request, SessionAttributeNames.USER, null);
+					target = ViewPaths.HOME;
+					redirect = true;
+				}
+
+
+			} catch (InstanceNotFoundException e) {
+				logger.warn(e.getMessage(),e);
+			} catch (DataException e) {
+				logger.warn(e.getMessage(),e);
+			}
+
+
+
+
+		} else if( Actions.REMEMBERME.equalsIgnoreCase(action)) {
+
+			String email = request.getParameter(ParameterNames.EMAIL);
+			String checked = request.getParameter(ParameterNames.CHECKED);
+
+			Boolean check = Boolean.valueOf(checked);
+
+			Cookie cookie = CookieManager.getCookie(request, WebConstants.REMEMBERME);
+
+			if(check){
+				if(!StringUtils.isEmptyOrWhitespaceOnly(email)) {
+					CookieManager.addCookie(response, WebConstants.REMEMBERME, email, "/", 365*24*60*60);
+				}
+			} else {
+				if (cookie != null) {
+					CookieManager.removeCookie(response, WebConstants.REMEMBERME, "/");
+				}
+			}
+
+
+		}else if (Actions.PRE_REGISTRO.equalsIgnoreCase(action)){
 
 			String idValue = request.getParameter(ParameterNames.ID);
 			Integer id = null;
 			if(idValue!=null) {
-			 id = Integer.valueOf(idValue);
+				id = Integer.valueOf(idValue);
 			}
 			List<Provincia> provincias = null;
-			
- 			try {
+
+			try {
 				List<Pais> paises = paisService.findAll(idioma);
 
 				if(id!=null) {
@@ -151,21 +216,21 @@ public class UsuarioServlet extends HttpServlet {
 					JsonObject provincia = null;
 					JsonArray array = new JsonArray();
 					for (Provincia p: provincias) {
-						 provincia = new JsonObject();
-						 provincia.addProperty("id", p.getIdProvincia());
-						 provincia.addProperty("nome", p.getNome());
-						 array.add(provincia);
+						provincia = new JsonObject();
+						provincia.addProperty("id", p.getIdProvincia());
+						provincia.addProperty("nome", p.getNome());
+						array.add(provincia);
 					}	
 					response.setContentType("application/json;charset=ISO-8859-1");
 					response.getOutputStream().write(array.toString().getBytes());
 
-					
+
 				} else {
-					
+
 					provincias = provinciaService.findByPais(34);
 					request.setAttribute(AttributeNames.PAISES, paises);
 					request.setAttribute(AttributeNames.PROVINCIAS, provincias);
-					
+
 				}
 
 
@@ -173,9 +238,9 @@ public class UsuarioServlet extends HttpServlet {
 			} catch (DataException e) {
 				logger.warn(e.getMessage(),e);
 			}
-			
+
 			if(id==null) {
-			target = ViewPaths.REGISTRO;
+				target = ViewPaths.REGISTRO;
 			}
 
 		} else if (Actions.REGISTRO.equalsIgnoreCase(action)){
@@ -211,14 +276,14 @@ public class UsuarioServlet extends HttpServlet {
 			u.setTelefono(ValidationUtils.stringValidator(telefono,errors,ParameterNames.TELEFONO, true));
 			u.setNomeUsuario(ValidationUtils.namesWithNumbersValidator(nomeUsuario,errors,ParameterNames.NOME_USUARIO, true));
 			u.setDNI(ValidationUtils.nifValidator(dni,errors,ParameterNames.DNI, true));
-			
+
 			Date fechanac = ValidationUtils.dateValidator(fnac,errors,ParameterNames.FECHA_NACIMIENTO, true);
 			if(fechanac!=null) {
-			Calendar calendar = Calendar.getInstance();
-		    calendar.setTime(fechanac); 
-		    calendar.add(Calendar.DAY_OF_YEAR, 1);  
-		    fechanac = calendar.getTime(); 
-		    u.setFechaNacimiento(fechanac);
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(fechanac); 
+				calendar.add(Calendar.DAY_OF_YEAR, 1);  
+				fechanac = calendar.getTime(); 
+				u.setFechaNacimiento(fechanac);
 			}
 
 			d.setCiudad(ValidationUtils.namesOnlyLettersValidator(cidade,errors,ParameterNames.CIDADE, true));
@@ -238,11 +303,11 @@ public class UsuarioServlet extends HttpServlet {
 					u = usuarioService.create(u);
 
 				} catch (DuplicateInstanceException e) {
-					e.printStackTrace();
+					logger.warn(e.getMessage(),e);
 				} catch (MailException e) {
-					e.printStackTrace();
+					logger.warn(e.getMessage(),e);
 				} catch (DataException e) {
-					e.printStackTrace();
+					logger.warn(e.getMessage(),e);
 				}
 
 			}
@@ -264,9 +329,7 @@ public class UsuarioServlet extends HttpServlet {
 
 
 		} 	else if (Actions.CHANGE_LOCALE.equalsIgnoreCase(action)) {
-
-			url = ParameterUtils.URLBuilder(url, mapa);
-
+			
 			String localeName = request.getParameter(ParameterNames.LOCALE);
 			// Recordar que hay que validar... lo que nos envian, incluso en algo como esto.
 			// Buscamos entre los Locale soportados por la web:
@@ -286,30 +349,62 @@ public class UsuarioServlet extends HttpServlet {
 				logger.debug("Locale changed to "+newLocale);
 			}
 
-			response.sendRedirect(request.getHeader("referer"));
+			if((mapa.get(ParameterNames.URL)!=null) && !(mapa.get(ParameterNames.URL)[0].isEmpty())) {
+				url = HttpUtils.createCallbackURL(request, mapa.get(ParameterNames.URL)[0]);
+				target = url;
+				response.sendRedirect(target);
+			} else {
+				response.sendRedirect(request.getHeader("referer"));
+			}
 
 
 		}else if (Actions.HISTORY.equalsIgnoreCase(action)){
 
+			mapa.remove(ParameterNames.PAGE);
+
 			Usuario u = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
 
-			Results<Apuesta> apuestas = null;
+			Results<Apuesta> results = null;
 
 			ApuestaCriteria apuestaTipo = new ApuestaCriteria();
 			apuestaTipo.setIdUsuario(u.getIdUsuario());
 
 			try {
 
-				apuestas = apuestaService.findHistorial(apuestaTipo, 1, 10);
+				int page = WebUtils.
+						getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
+
+				results = apuestaService.findHistorial(apuestaTipo,(page-1)*pageSize+1,pageSize);
+
+				// Resultados de la busqueda (siempre preparar comodos para renderizar)
+				request.setAttribute(AttributeNames.RESULTADOS, results.getPage());
+				request.setAttribute(AttributeNames.TOTAL, results.getTotal());
+
+				// Datos para paginacion															
+				// (Calculos aqui, datos comodos para renderizar)
+				int totalPages = (int) Math.ceil((double)results.getTotal()/(double)pageSize);
+				int firstPagedPage = Math.max(1, page-pagingPageCount);
+				int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
+				request.setAttribute(ParameterNames.PAGE, page);
+				request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
+				request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
+				request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
+
+				//parametros de busqueda actuales
+
+				url = ParameterUtils.URLBuilder(url, mapa);
+				request.setAttribute(ParameterNames.URL, url);
+
 
 			} catch (DataException e) {
-				e.printStackTrace();
+				logger.warn(e.getMessage(),e);
 			}
 
-			request.setAttribute(AttributeNames.APUESTAS, apuestas);
+			request.setAttribute(AttributeNames.APUESTAS, results);
 			target = ViewPaths.HISTORY;
 
-		}else if (Actions.OPENBETS.equalsIgnoreCase(action)){
+
+		} else if (Actions.OPENBETS.equalsIgnoreCase(action)){
 
 			Usuario u = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
 
@@ -323,15 +418,69 @@ public class UsuarioServlet extends HttpServlet {
 				apuestas = apuestaService.findOpenBets(apuestaTipo, 1, 10);
 
 			} catch (DataException e) {
-				e.printStackTrace();
+				logger.warn(e.getMessage(),e);
 			}
 
 			request.setAttribute(AttributeNames.APUESTAS, apuestas);
 			target = ViewPaths.OPENBETS;
 
+		}else if (Actions.PRE_EDIT.equalsIgnoreCase(action)){
+
+			Usuario u = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
+
+			String idValue = request.getParameter(ParameterNames.ID);
+			Integer id = null;
+
+			if(idValue!=null) {
+				id = Integer.valueOf(idValue);
+			}
+
+			List<Provincia> provincias = null;
+
+			try {
+				List<Pais> paises = paisService.findAll(idioma);
+
+				if(id!=null) {
+					provincias = provinciaService.findByPais(id);
+					JsonObject provincia = null;
+					JsonArray array = new JsonArray();
+					for (Provincia p: provincias) {
+						provincia = new JsonObject();
+						provincia.addProperty("id", p.getIdProvincia());
+						provincia.addProperty("nome", p.getNome());
+						array.add(provincia);
+					}	
+					response.setContentType("application/json;charset=ISO-8859-1");
+					response.getOutputStream().write(array.toString().getBytes());
+
+
+				} else {
+
+					Provincia p = provinciaService.findById(u.getDireccion().getIdProvincia());
+
+					provincias = provinciaService.findByPais(p.getIdPais());
+
+					request.setAttribute(AttributeNames.PAIS, p.getIdPais());
+					request.setAttribute(AttributeNames.PAISES, paises);
+					request.setAttribute(AttributeNames.PROVINCIAS, provincias);
+
+				}
+
+
+
+			} catch (DataException e) {
+				logger.warn(e.getMessage(),e);
+			}
+
+			if(id==null) {
+				target = ViewPaths.EDITPROFILE;
+			}
+
 		} else if (Actions.EDITPROFILE.equalsIgnoreCase(action)){
 
 			Usuario u = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
+			Usuario changes = new Usuario();
+			changes.setIdUsuario(u.getIdUsuario());
 			Direccion d =  u.getDireccion();
 			//Recupero parametros
 
@@ -339,7 +488,6 @@ public class UsuarioServlet extends HttpServlet {
 			String email = request.getParameter(ParameterNames.REG_EMAIL);
 			String apelido1 = request.getParameter(ParameterNames.APELIDO1);
 			String apelido2 = request.getParameter(ParameterNames.APELIDO2);
-			String password = request.getParameter(ParameterNames.PASSWORD);
 			String fnac = request.getParameter(ParameterNames.FECHA_NACIMIENTO);
 			String telefono = request.getParameter(ParameterNames.TELEFONO);
 			String nomeUsuario = request.getParameter(ParameterNames.NOME_USUARIO);
@@ -354,22 +502,21 @@ public class UsuarioServlet extends HttpServlet {
 			String letra = request.getParameter(ParameterNames.LETRA);
 
 			//Valido parametros
-			u.setNome(ValidationUtils.namesOnlyLettersValidator(nombre,errors,ParameterNames.NOMBRE, true));
-			u.setEmail(ValidationUtils.emailValidator(email,errors,ParameterNames.REG_EMAIL, true));
-			u.setApelido1(ValidationUtils.namesOnlyLettersValidator(apelido1,errors,ParameterNames.APELIDO1, true));
-			u.setApelido2(ValidationUtils.namesOnlyLettersValidator(apelido2,errors,ParameterNames.APELIDO2, true));
-			u.setPassword(ValidationUtils.passwordValidator(password,errors,ParameterNames.PASSWORD, true));
-			u.setTelefono(ValidationUtils.stringValidator(telefono,errors,ParameterNames.TELEFONO, true));
-			u.setNomeUsuario(ValidationUtils.namesWithNumbersValidator(nomeUsuario,errors,ParameterNames.NOME_USUARIO, true));
-			u.setDNI(ValidationUtils.nifValidator(dni,errors,ParameterNames.DNI, true));
-			
+			changes.setNome(ValidationUtils.namesOnlyLettersValidator(nombre,errors,ParameterNames.NOMBRE, true));
+			changes.setEmail(ValidationUtils.emailValidator(email,errors,ParameterNames.REG_EMAIL, true));
+			changes.setApelido1(ValidationUtils.namesOnlyLettersValidator(apelido1,errors,ParameterNames.APELIDO1, true));
+			changes.setApelido2(ValidationUtils.namesOnlyLettersValidator(apelido2,errors,ParameterNames.APELIDO2, true));
+			changes.setTelefono(ValidationUtils.stringValidator(telefono,errors,ParameterNames.TELEFONO, true));
+			changes.setNomeUsuario(ValidationUtils.namesWithNumbersValidator(nomeUsuario,errors,ParameterNames.NOME_USUARIO, true));
+			changes.setDNI(ValidationUtils.nifValidator(dni,errors,ParameterNames.DNI, true));
+
 			Date fechanac = ValidationUtils.dateValidator(fnac,errors,ParameterNames.FECHA_NACIMIENTO, true);
 			if(fechanac!=null) {
-			Calendar calendar = Calendar.getInstance();
-		    calendar.setTime(fechanac); 
-		    calendar.add(Calendar.DAY_OF_YEAR, 1);  
-		    fechanac = calendar.getTime(); 
-		    u.setFechaNacimiento(fechanac);
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(fechanac); 
+				calendar.add(Calendar.DAY_OF_YEAR, 1);  
+				fechanac = calendar.getTime(); 
+				changes.setFechaNacimiento(fechanac);
 			}
 
 			d.setCiudad(ValidationUtils.namesOnlyLettersValidator(cidade,errors,ParameterNames.CIDADE, true));
@@ -380,22 +527,22 @@ public class UsuarioServlet extends HttpServlet {
 			d.setPiso(ValidationUtils.intValidator(piso,errors,ParameterNames.PISO, false));
 			d.setLetra(ValidationUtils.letterValidator(letra,errors,ParameterNames.LETRA, false));
 
-			u.setDireccion(d);
+			changes.setDireccion(d);
 
 			Usuario usuario = null;
 
 			if(!errors.hasErrors()) {
 
 				try {
-					usuarioService.update(u);
-					usuarioService.editDireccion(d, u);
+					usuarioService.update(changes);
+					usuarioService.editDireccion(d, changes);
 
-					usuario = usuarioService.findById(u.getIdUsuario());
+					usuario = usuarioService.findById(changes.getIdUsuario());
 
 				} catch (DuplicateInstanceException e) {
-					e.printStackTrace();
+					logger.warn(e.getMessage(),e);
 				} catch (DataException e) {
-					e.printStackTrace();
+					logger.warn(e.getMessage(),e);
 				}
 
 			}
@@ -418,6 +565,67 @@ public class UsuarioServlet extends HttpServlet {
 			}
 
 
+		}else if (Actions.CHANGE_PASSWORD.equalsIgnoreCase(action)){
+
+			Usuario usuario = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
+			Usuario change = new Usuario();
+			//Recupero parametros
+
+			String password = request.getParameter(ParameterNames.PASSWORD); 
+			String newPassword = request.getParameter(ParameterNames.NEW_PASSWORD); 
+			String repeatPassword = request.getParameter(ParameterNames.REPEAT_PASSWORD);
+
+			//Valido parametros
+			password = ValidationUtils.passwordValidator(password, errors, ParameterNames.PASSWORD, true);
+			newPassword = ValidationUtils.passwordValidator(newPassword, errors, ParameterNames.NEW_PASSWORD, true);
+			repeatPassword = ValidationUtils.passwordValidator(repeatPassword, errors, ParameterNames.REPEAT_PASSWORD, true);
+
+			
+			logger.debug(password);
+			logger.debug(newPassword);
+			logger.debug(repeatPassword);
+			Usuario u = null;
+
+			if(!errors.hasErrors()) {
+
+				if(newPassword.equals(repeatPassword)) {
+
+					if(PasswordEncryptionUtil.checkPassword(password, usuario.getPassword())) {
+						change.setIdUsuario(usuario.getIdUsuario());
+						change.setPassword(newPassword);
+
+						try {
+							usuarioService.update(change);
+
+							u = usuarioService.findById(change.getIdUsuario());
+						} catch (DataException e) {
+							logger.warn(e.getMessage(),e);
+						}
+					} else {
+						errors.addError(ParameterNames.PASSWORD, ErrorCodes.NOT_CORRECT);
+					}
+
+				} else {
+					errors.addError(ParameterNames.PASSWORD, ErrorCodes.NOT_EQUALS);
+				}
+			}
+
+			if(u == null) {
+				errors.addError(ParameterNames.ACTION,ErrorCodes.EDIT_PROFILE_ERROR);	
+			}
+
+			if (errors.hasErrors()) {	
+				if (logger.isDebugEnabled()) {
+					logger.debug("Fallo en la edicion: {}", errors);
+				}
+				request.setAttribute(AttributeNames.ERRORS, errors);				
+				target = ViewPaths.EDITPROFILE;				
+			} else {				
+				SessionManager.set(request, SessionAttributeNames.USER, u);		
+				target = ViewPaths.HOME;				
+			}
+
+
 		} else if (Actions.INGRESAR.equalsIgnoreCase(action)){
 
 			Usuario u = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
@@ -426,20 +634,26 @@ public class UsuarioServlet extends HttpServlet {
 			String cantidad = request.getParameter(ParameterNames.CANTIDAD);
 
 			//validamos
-			Double cantidadd = Double.parseDouble(cantidad);
-			iban = ValidationUtils.stringValidator(iban, errors, ParameterNames.IBAN, true);
+			Double cantidadd = ValidationUtils.doubleValidator(cantidad, errors, ParameterNames.CANTIDAD, true);
+			iban = ValidationUtils.ibanValidator(iban, errors, ParameterNames.IBAN, true);
 
 			try {
-				bancoService.ingresar(u.getIdUsuario(), cantidadd);
-				u = usuarioService.findById(u.getIdUsuario());
+
+				if(!errors.hasErrors()) {
+					bancoService.ingresar(u.getIdUsuario(), cantidadd);
+					u = usuarioService.findById(u.getIdUsuario());
+					SessionManager.set(request, SessionAttributeNames.USER, u);
+					target = ViewPaths.HOME;
+					redirect = true;
+				} else {
+
+					request.setAttribute(AttributeNames.ERRORS, errors);
+					target = ViewPaths.INGRESAR;
+				}
+
 			} catch (DataException e) {
-				e.printStackTrace();
+				logger.warn(e.getMessage(),e);
 			}
-
-			SessionManager.set(request, SessionAttributeNames.USER, u);
-
-			target = ViewPaths.HOME;
-			redirect = true;
 
 		}else if (Actions.RETIRAR.equalsIgnoreCase(action)){
 
@@ -449,29 +663,18 @@ public class UsuarioServlet extends HttpServlet {
 			String cantidad = request.getParameter(ParameterNames.CANTIDAD);
 
 			//validamos
-			Double cantidadd = Double.parseDouble(cantidad);
-			iban = ValidationUtils.stringValidator(iban, errors, ParameterNames.IBAN, true);
-
-			if(cantidadd > u.getBanco()) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Añadido fallo, el saldo no es suficiente");
-				}
-				errors.addError(ParameterNames.CANTIDAD, ErrorCodes.NOT_ENOUGH_MONEY);
-			} 
-
+			Double cantidadd = ValidationUtils.doubleValidator(cantidad, errors, ParameterNames.CANTIDAD, true);
+			iban = ValidationUtils.ibanValidator(iban, errors, ParameterNames.IBAN, true);
 
 			if(!errors.hasErrors()) {
-				try {
 
-					bancoService.retirar(u.getIdUsuario(), cantidadd);
-
-					u = usuarioService.findById(u.getIdUsuario());
-
-				} catch (DataException e) {
-					e.printStackTrace();
+				if(cantidadd > u.getBanco()) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("Añadido fallo, el saldo no es suficiente");
+					}
+					errors.addError(ParameterNames.CANTIDAD, ErrorCodes.NOT_ENOUGH_MONEY);
 				}
 
-				SessionManager.set(request, SessionAttributeNames.USER, u);
 			} 
 
 
@@ -481,7 +684,18 @@ public class UsuarioServlet extends HttpServlet {
 				}
 				request.setAttribute(AttributeNames.ERRORS, errors);				
 				target = ViewPaths.RETIRAR;				
-			} else {				
+			} else {		
+				try {
+
+					bancoService.retirar(u.getIdUsuario(), cantidadd);
+
+					u = usuarioService.findById(u.getIdUsuario());
+
+				} catch (DataException e) {
+					logger.warn(e.getMessage(),e);
+				}
+
+				SessionManager.set(request, SessionAttributeNames.USER, u);
 
 				target = ViewPaths.HOME;	
 				redirect = true;

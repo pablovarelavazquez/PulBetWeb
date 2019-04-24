@@ -5,35 +5,61 @@
 
 	<%
 		Usuario u = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
-	%>
+		Cookie cookie = CookieManager.getCookie(request, WebConstants.REMEMBERME);
+		
 
+	%>
+	
 	<c:choose>
 		<c:when test="${empty sessionScope['user']}">
 
 			<div id="login">
 
 				<form action="<%=ControllerPaths.USUARIO%>" method="post">
-					<%
-						List<String> parameterErrors = errors.showErrors(ParameterNames.ACTION);
-								for (String error : parameterErrors) {
-					%><li><%=error%></li>
-					<%
-						}
+					
+					<input  type="hidden" name="<%=ParameterNames.ACTION%>"
+						value="<%=Actions.LOGIN%>" /> 
+						
+					
+					<% 
+					if(cookie!=null){
+					String email = cookie.getValue();
 					%>
-					<input type="hidden" name="<%=ParameterNames.ACTION%>"
-						value="<%=Actions.LOGIN%>" /> <input type="email"
+					<input class="logininput" type="email" id="loginemail"
+						name="<%=ParameterNames.LOGIN_EMAIL%>" placeholder="Email"
+						value="<%=email%>" />
+					
+					<input class="logininput"  type="password" placeholder="Contraseña"
+						name="<%=ParameterNames.PASSWORD%>" />
+					
+					<button id="loginbutton" type="submit">IR</button>
+					
+					<div id="remember">
+					<input id="rememberinput" type="checkbox" checked="checked">
+					<label>Recordar usuario</label>
+					</div>
+					<% 
+					} else {
+					%>
+					<input class="logininput" type="email" id="loginemail"
 						name="<%=ParameterNames.LOGIN_EMAIL%>" placeholder="Email"
 						value="<%=ParamsUtils.getParameter(request, ParameterNames.LOGIN_EMAIL)%>" />
-					<%
-						parameterErrors = errors.showErrors(ParameterNames.LOGIN_EMAIL);
-								for (String error : parameterErrors) {
-					%><li><%=error%></li>
-					<%
-						}
-					%>
-					<input type="password" placeholder="Contraseña"
+						
+						<input class="logininput"  type="password" placeholder="Contraseña"
 						name="<%=ParameterNames.PASSWORD%>" />
-					<button type="submit">IR</button>
+					
+					<button id="loginbutton" type="submit">IR</button>
+					
+					<div id="remember">
+					<input id="rememberinput" type="checkbox">
+					<label>Recordar usuario</label>
+					</div>
+					<% 
+					}
+					%>
+					
+					
+					
 				</form>
 			</div>
 
@@ -53,11 +79,17 @@
 						Salir </a>
 				</div>
 				<div id="ingresar">
-					<p>${sessionScope['user'].getBanco()}euros</p>
+					
+					<c:if
+						test="${sessionScope['user'].getBanco() > 0.0 }">
+
+						<p>${sessionScope['user'].getBanco()} euros</p>
+
+					</c:if>
 
 					<c:if
 						test="${sessionScope['user'].getBanco() <= 0.0 || empty sessionScope['user'].getBanco()}">
-
+						<p>0.0 euros</p>
 						<a
 							href="<%=request.getContextPath() + "/"%><%=ViewPaths.INGRESAR%>"
 							> Ingresar </a>
@@ -73,16 +105,19 @@
 
 				<div id="meumenudes" class="menudes-contido">
 					<a
-						href="<%=request.getContextPath() + "/"%><%=ViewPaths.EDITPROFILE%>">Mi
-						perfil</a> <a
-						href="<%=request.getContextPath() + "/"%><%=ViewPaths.INGRESAR%>">Ingresar</a>
-					<a href="<%=request.getContextPath() + "/"%><%=ViewPaths.RETIRAR%>">Retirar</a>
-					<a href="<%=request.getContextPath() + "/"%><%=ViewPaths.HISTORY%>">Historial</a>
+						href="<%=ControllerPaths.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRE_EDIT%>">Mi
+						perfil</a> 
+					<a
+						href="<%=request.getContextPath()%><%=ViewPaths.INGRESAR%>">Ingresar</a>
+					<a href="<%=request.getContextPath()%><%=ViewPaths.RETIRAR%>">Retirar</a>
+					<a href="<%=request.getContextPath()%><%=ViewPaths.HISTORY%>">Historial</a>
 					<a
 						href="<%=(ControllerPaths.USUARIO + "?")%>
 							<%=ParameterNames.ACTION%>=
 							<%=Actions.OPENBETS%>">Apuestas
 						abiertas</a>
+					<a href="<%=(ControllerPaths.USUARIO + "?")%><%=ParameterNames.ACTION%>=
+							<%=Actions.CLOSE_ACCOUNT%>">Cerrar cuenta</a>
 
 				</div>
 			</div>

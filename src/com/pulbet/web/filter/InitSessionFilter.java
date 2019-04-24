@@ -39,6 +39,8 @@ public class InitSessionFilter implements Filter {
 		HttpServletRequest httpRequest = ((HttpServletRequest) request);
 		HttpSession session = httpRequest.getSession(false);
 		
+		 
+		 
 		if (session==null) {
 			if (logger.isInfoEnabled()) {
 				logger.info("Request from "+request.getRemoteAddr()+": Initializing session...");
@@ -50,6 +52,14 @@ public class InitSessionFilter implements Filter {
 			Carrito c = new Carrito();
 			SessionManager.set(httpRequest, SessionAttributeNames.CARRITO, c);
 		} 
+		
+		Carrito carrito = (Carrito) SessionManager.get(httpRequest, SessionAttributeNames.CARRITO);
+		
+		if(carrito == null) {
+			Carrito c = new Carrito();
+			SessionManager.set(httpRequest, SessionAttributeNames.CARRITO, c);
+		}
+		
 		
 		// Continuar la invocacion de la cadena de responsabilidad.
 		// Solamente no se invocaría si el filtro determinase otro 

@@ -15,6 +15,7 @@ public interface AttributeNames {
 	public static final String FIRST_PAGED_PAGES = "firstPagedPage";
 	public static final String LAST_PAGED_PAGES = "lastPagedPage";
 	
+	public static final String PAIS = "pais";
 	public static final String PAISES = "paises";
 	public static final String PROVINCIAS = "provincias";
 }

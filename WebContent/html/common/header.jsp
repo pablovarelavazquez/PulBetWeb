@@ -33,7 +33,7 @@
 	<div id="header">
 	
 		<div id="logo">
-			<a href="<%=request.getContextPath()%>">PulBet</a>
+			<a href="<%=request.getContextPath()%>"><img src="<%=request.getContextPath()%>/images/LogoPulBet.png"></a>
 		</div>
 		
 		

@@ -16,12 +16,15 @@ public class ParameterNames {
 	public static final String ID_RESULTADO = "idresultado";
 	
 	public static final String NOMBRE = "nombre";
+	public static final String EMAIL = "email";
 	public static final String LOGIN_EMAIL = "loginemail";
 	public static final String REG_EMAIL = "regemail";
 	public static final String APELIDO1 = "apelido1";
 	public static final String APELIDO2 = "apelido2";
 	public static final String TELEFONO = "telefono";
 	public static final String PASSWORD = "password";
+	public static final String NEW_PASSWORD = "newPassword";
+	public static final String REPEAT_PASSWORD = "repeatPassword";
 	public static final String FECHA_NACIMIENTO = "fnac";
 	public static final String NOME_USUARIO = "nomeusuario";
 	public static final String DNI = "dni";
@@ -49,6 +52,8 @@ public class ParameterNames {
 	public static final String CANTIDAD = "cantidad";
 	
 	public static final String APUESTA = "apuesta";
+	
+	public static final String CHECKED = "checked";
 	
 	public static final String URL="url";
 	

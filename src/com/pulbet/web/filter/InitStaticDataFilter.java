@@ -59,7 +59,7 @@ public class InitStaticDataFilter implements Filter {
 		
 		try {
 			List<Deporte> deportes = deporteService.findAll(idioma);
-			Results<Evento> eventos = eventoService.findByCriteria(evento, 1, 10, idioma);
+			Results<Evento> eventos = eventoService.findByCriteria(evento, 1, 4, idioma);
 			
 			request.setAttribute("deportes", deportes);
 			request.setAttribute("eventos", eventos);
@@ -68,7 +68,7 @@ public class InitStaticDataFilter implements Filter {
 			
 			
 		} catch (DataException e) {
-			e.printStackTrace();
+			logger.warn(e.getMessage(),e);
 		}
 		
 		chain.doFilter(request, response);
