@@ -1,6 +1,7 @@
 package com.pulbet.web.controller;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,8 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.pulbet.web.model.Carrito;
 import com.pulbet.web.model.LineaCarrito;
+import com.pulbet.web.util.DateUtils;
 import com.pulbet.web.util.LocaleManager;
 import com.pulbet.web.util.ParameterUtils;
 import com.pulbet.web.util.SessionAttributeNames;
@@ -25,13 +29,20 @@ import com.pulbet.web.util.WebConstants;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.model.Apuesta;
+import com.pvv.pulbet.model.Evento;
 import com.pvv.pulbet.model.LineaApuesta;
+import com.pvv.pulbet.model.Resultado;
+import com.pvv.pulbet.model.TipoResultado;
 import com.pvv.pulbet.model.Usuario;
 import com.pvv.pulbet.service.ApuestaService;
 import com.pvv.pulbet.service.BancoService;
+import com.pvv.pulbet.service.EventoService;
+import com.pvv.pulbet.service.ResultadoService;
 import com.pvv.pulbet.service.UsuarioService;
 import com.pvv.pulbet.service.impl.ApuestaServiceImpl;
 import com.pvv.pulbet.service.impl.BancoServiceImpl;
+import com.pvv.pulbet.service.impl.EventoServiceImpl;
+import com.pvv.pulbet.service.impl.ResultadoServiceImpl;
 import com.pvv.pulbet.service.impl.UsuarioServiceImpl;
 
 @WebServlet("/apuesta")
@@ -41,12 +52,16 @@ public class ApuestaServlet extends HttpServlet {
 	private ApuestaService apuestaService = null;
 	private BancoService bancoService = null;
 	private UsuarioService usuarioService = null;
+	private EventoService eventoService = null;
+	private ResultadoService resultadoService = null;
 	private static Logger logger = LogManager.getLogger(ApuestaServlet.class);
 	
     public ApuestaServlet() {
     	apuestaService = new ApuestaServiceImpl();
     	bancoService = new BancoServiceImpl();
     	usuarioService = new UsuarioServiceImpl();
+    	eventoService = new EventoServiceImpl();
+    	resultadoService = new ResultadoServiceImpl();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -70,7 +85,7 @@ public class ApuestaServlet extends HttpServlet {
 			
 			Apuesta a = new Apuesta();
 			List<LineaApuesta> lineas = new ArrayList<LineaApuesta>();
-			
+			List<LineaCarrito> lineasCarrito = new ArrayList<LineaCarrito>();
 			int count = 1;
 			double ganancias = 1.0;
 			String importeValue = request.getParameter(ParameterNames.IMPORTE);
@@ -114,29 +129,84 @@ public class ApuestaServlet extends HttpServlet {
 				//mail de apuesta realizada
 				
 				//Esto valeira o carrito, non sei se e o mais axeitado.
-				//c.setLineas(lineasCarrito);
+				c.setLineas(lineasCarrito);
 				
 				SessionManager.set(request, SessionAttributeNames.USER, u);
 				target="";
 				redirect = true;
 
 			} else if (u == null){ 
-				errors.addError(ParameterNames.APUESTA, ErrorCodes.NOT_LOGGED);
+				errors.addError(ParameterNames.ACTION, ErrorCodes.NOT_LOGGED);
 				request.setAttribute(AttributeNames.ERRORS, errors);			
 				
 				if(logger.isDebugEnabled()) {
 					logger.debug("Error creando apuesta");
 				}
+				
+				target=ViewPaths.LOGIN;
+				
+				
 			} else if (u.getBanco()<importe) {
-				errors.addError(ParameterNames.APUESTA, ErrorCodes.NOT_ENOUGH_MONEY);
+				errors.addError(ParameterNames.ACTION, ErrorCodes.NOT_ENOUGH_MONEY);
 				request.setAttribute(AttributeNames.ERRORS, errors);
 				if(logger.isDebugEnabled()) {
 					logger.debug("Error creando apuesta");
 				}
+				
+				target=ViewPaths.INGRESAR;
 			}
 						
-			target = ViewPaths.HOME;
 			
+		} else if(Actions.FIND_DETAIL.equalsIgnoreCase(action)) {
+			
+			String idApuesta = request.getParameter(ParameterNames.ID);
+			
+			Long id = Long.valueOf(idApuesta);
+			
+			Apuesta a = null;
+			JsonObject linea = null;
+			JsonArray array = new JsonArray();
+			Evento e = null;
+			Resultado r = null;
+			Long l = null;
+			String fecha = null;
+			try {
+				
+				
+				a = apuestaService.findById(id);
+				
+				for(LineaApuesta la : a.getLineas()) {
+					linea = new JsonObject();
+					
+					e = eventoService.findById(la.getIdEvento(), idioma);
+					r = resultadoService.findCuota(la.getIdEvento(), la.getIdResultado(), idioma);
+					
+					for(TipoResultado tr : e.getMercados()) {
+						
+						l = new Long(tr.getIdTipoResultado());
+						
+						if(r.getIdTipoResulatado() ==  Long.valueOf(l)) {
+							linea.addProperty("tipoResultado", tr.getNome());
+						}
+					}
+					
+					linea.addProperty("estado", la.getProcesado());
+					linea.addProperty("resultado", r.getNombre());
+					linea.addProperty("cuota", r.getCuota().toString());
+					linea.addProperty("local", e.getLocal().getNome());
+					linea.addProperty("visitante", e.getVisitante().getNome());
+					fecha = DateUtils.WITH_HOUR_FORMAT.format(e.getFecha());
+					linea.addProperty("fecha", fecha);
+					
+					array.add(linea);
+				}
+				
+				response.setContentType("application/json;charset=ISO-8859-1");
+				response.getOutputStream().write(array.toString().getBytes());
+				
+			} catch (DataException ex) {
+				logger.warn(ex.getMessage(),ex);
+			}
 			
 			
 		} else {
@@ -146,12 +216,14 @@ public class ApuestaServlet extends HttpServlet {
 			redirect =  true;
 		}
 		
-		if(redirect) {
-			logger.info("Redirecting to "+target);
-			response.sendRedirect(request.getContextPath()+target);
-		} else {
-			logger.info("Forwarding to "+target);
-			request.getRequestDispatcher(target).forward(request, response);
+		if((!Actions.FIND_DETAIL.equalsIgnoreCase(action))) {
+			if(redirect) {
+				logger.info("Redirecting to "+target);
+				response.sendRedirect(request.getContextPath()+target);
+			} else {
+				logger.info("Forwarding to "+target);
+				request.getRequestDispatcher(target).forward(request, response);
+			}
 		}
 		
 		

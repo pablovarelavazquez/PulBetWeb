@@ -6,6 +6,7 @@ public interface AttributeNames {
 	public static final String RESULTADOS = "resultados";
 	public static final String DEPORTES = "deportes";
 	public static final String EVENTO = "evento";
+	public static final String EVENTOS = "eventos";
 	public static final String APUESTAS = "apuestas";
 	public static final String COMPETICIONES = "competiciones";
 	

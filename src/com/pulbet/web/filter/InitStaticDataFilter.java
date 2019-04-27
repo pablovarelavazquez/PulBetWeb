@@ -15,16 +15,20 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.pulbet.web.controller.AttributeNames;
 import com.pulbet.web.util.LocaleManager;
 import com.pulbet.web.util.SessionManager;
 import com.pulbet.web.util.WebConstants;
 import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.model.Competicion;
 import com.pvv.pulbet.model.Deporte;
 import com.pvv.pulbet.model.Evento;
+import com.pvv.pulbet.service.CompeticionService;
 import com.pvv.pulbet.service.DeporteService;
 import com.pvv.pulbet.service.EventoCriteria;
 import com.pvv.pulbet.service.EventoService;
 import com.pvv.pulbet.service.Results;
+import com.pvv.pulbet.service.impl.CompeticionServiceImpl;
 import com.pvv.pulbet.service.impl.DeporteServiceImpl;
 import com.pvv.pulbet.service.impl.EventoServiceImpl;
 
@@ -34,10 +38,12 @@ public class InitStaticDataFilter implements Filter {
 	
 	private DeporteService deporteService = null;
 	private EventoService eventoService = null;
+	private CompeticionService competicionService = null;
 	
     public InitStaticDataFilter() {
     	deporteService =  new DeporteServiceImpl();
     	eventoService = new EventoServiceImpl();
+    	competicionService =  new CompeticionServiceImpl();
 
     }
 
@@ -53,18 +59,16 @@ public class InitStaticDataFilter implements Filter {
 		Locale userLocale = (Locale) SessionManager.get(httpRequest, WebConstants.USER_LOCALE);
 		String idioma = LocaleManager.getIdioma(userLocale.toString());
 		
-		logger.debug("Idioma {}", idioma);
-		
 		EventoCriteria evento = new EventoCriteria();
 		
 		try {
 			List<Deporte> deportes = deporteService.findAll(idioma);
 			Results<Evento> eventos = eventoService.findByCriteria(evento, 1, 4, idioma);
+			List<Competicion> competiciones = competicionService.findByDeporte(1l);
 			
-			request.setAttribute("deportes", deportes);
-			request.setAttribute("eventos", eventos);
-			
-			logger.debug("Deportes {} | Eventos {}", deportes, eventos);
+			request.setAttribute(AttributeNames.DEPORTES, deportes);
+			request.setAttribute(AttributeNames.EVENTOS, eventos);
+			request.setAttribute(AttributeNames.COMPETICIONES, competiciones);
 			
 			
 		} catch (DataException e) {

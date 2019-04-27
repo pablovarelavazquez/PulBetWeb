@@ -1,4 +1,3 @@
-//Menu desplegable
 $(document).ready(function () { 
 
 	$("#paises").change(function(){
@@ -24,7 +23,32 @@ $(document).ready(function () {
 				}
 		});
 
-	})
+	});
+	
+	$("#searchdeporte").change(function(){
+		var selectedSport = $(this).children("option:selected").val();
+		$.ajax({
+			type: "GET",
+			url: "/PulBetWeb/evento",
+			data: { 'id': selectedSport,
+				'action': "findCompetition"},
+				contentType:"application/x-www-form-urlencoded; charset=ISO-8859-1",
+				dataType:"json",
+				success: function (deportesArray) {
+
+					if(!$("#searchcompeticion").html().isEmpty){
+						$("#searchcompeticion").html("");
+					}
+					$("#searchcompeticion").html("<option></option>");
+					for(var i = 0; i < deportesArray.length; i++){
+						$("#searchcompeticion").html($("#searchcompeticion").html()+"<option value="+deportesArray[i].id+">"+deportesArray[i].nome+"</option>")
+					}
+					
+
+				}
+		});
+
+	});
 	
 	$("#editpaises").change(function(){
 		var selectedCountry = $(this).children("option:selected").val();
@@ -85,7 +109,30 @@ $(document).ready(function () {
 				'action':"addcarrito",
 				'idevento': $(this).attr("data-evento"),
 				'idresultado': $(this).attr("data-resultado") 
-				}
+				},
+			success: function () {
+				location.reload(true);
+			}
+		});
+		
+	});
+	
+	$(".cuota").mouseover().css("cursor","pointer");
+	$(".dellinea").mouseover().css("cursor","pointer");
+	
+	$(".dellinea").click(function(){
+		
+		$.ajax({
+			type: "GET",
+			url: "/PulBetWeb/carrito",
+			data: {
+				'action':"delcarrito",
+				'idevento': $(this).attr("data-evento"),
+				'idresultado': $(this).attr("data-resultado") 
+				},
+			success: function () {
+				location.reload(true);
+			}
 		});
 		
 	});
@@ -93,16 +140,62 @@ $(document).ready(function () {
 	//Cando se carga
 	var acumulada = parseFloat($("#acumulada").val());
 	var importe = parseFloat($("#importe").val());
-	$("#ganancias").val(importe*acumulada);
+	$("#ganancias").val((importe*acumulada).toFixed(2));
+	$("#acumulada").val(acumulada.toFixed(2));
 	
 	//Cando hai cambio
 	$("#importe").change(function(){
 		var acumulada = parseFloat($("#acumulada").val());
 		var importe = parseFloat($("#importe").val());
-		$("#ganancias").val(importe*acumulada);
+		$("#ganancias").val((importe*acumulada).toFixed(2));
 	});
 	
+	 $('.masdetalle').click(function () {
+		 
+		 var estediv = $(this);
+		 
+		 if((estediv.find(".fillo").html() == "")){
+		 
+		 $.ajax({
+				type: "GET",
+				url: "/PulBetWeb/apuesta",
+				data: { 'id': $(this).attr("data-id"),
+					'action':"detail"},
+					contentType:"application/x-www-form-urlencoded; charset=ISO-8859-1",
+					dataType:"json",
+					success: function (lineasArray) {
 
+						for(var i = 0; i < lineasArray.length; i++){
+							
+							if(lineasArray[i].estado == 1) {
+								estediv.find(".fillo").html(estediv.find(".fillo").html()+"<div class='lineadetalle'><p class='detres'>"+lineasArray[i].resultado+"</p><p class='detcuot'> Cuota: "+lineasArray[i].cuota+"</p><p class='detev'>"+lineasArray[i].local+" VS "+lineasArray[i].visitante+"  "+lineasArray[i].fecha+"</p></p><p class='dettipres'>"+lineasArray[i].tipoResultado+"</p><p class='detest acertada'>ACERTADA</p></div>");
+							} else if(lineasArray[i].estado == 2){
+								estediv.find(".fillo").html(estediv.find(".fillo").html()+"<div class='lineadetalle'><p class='detres'>"+lineasArray[i].resultado+"</p><p class='detcuot'> Cuota: "+lineasArray[i].cuota+"</p><p class='detev'>"+lineasArray[i].local+" VS "+lineasArray[i].visitante+"  "+lineasArray[i].fecha+"</p></p><p class='dettipres'>"+lineasArray[i].tipoResultado+"</p><p class='detest fallada'>FALLADA</p></div>");
+							} else {
+								estediv.find(".fillo").html(estediv.find(".fillo").html()+"<div class='lineadetalle'><p class='detres'>"+lineasArray[i].resultado+"</p><p class='detcuot'> Cuota: "+lineasArray[i].cuota+"</p><p class='detev'>"+lineasArray[i].local+" VS "+lineasArray[i].visitante+"  "+lineasArray[i].fecha+"</p></p><p class='dettipres'>"+lineasArray[i].tipoResultado+"</p><p class='detest pendiente'>PENDIENTE</p></div>");
+							}
+							
+						}
+					}
+					
+			});
+		 } else {
+			 estediv.find(".fillo").html("");
+		 }
+
+
+	  });
+	 
+	 $(".historycheck").change(function(){
+		 
+		 if($(this).val() == 3){
+			 $("#findfecha input").prop('disabled', false);
+		 } else {
+			 $("#findfecha input").prop('disabled', true);
+		 }
+		 
+	 });
+	 
 });
 
 
@@ -110,6 +203,7 @@ function desplegarMenu() {
 	document.getElementById("meumenudes").classList.toggle("show");
 }
 
+//Menu desplegable
 window.onclick = function (event) {
 	if (!event.target.matches('.dropbtn')) {
 

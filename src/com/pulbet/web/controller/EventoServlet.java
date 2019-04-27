@@ -1,6 +1,8 @@
 package com.pulbet.web.controller;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -15,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.pulbet.web.config.ConfigurationManager;
 import com.pulbet.web.config.ConfigurationParameterNames;
 import com.pulbet.web.util.HttpUtils;
@@ -92,18 +96,34 @@ public class EventoServlet extends HttpServlet {
 
 
 		//Recuperamos parametros
-		String idEvento = request.getParameter(ParameterNames.EVENTO);
 		String competicion =  request.getParameter(ParameterNames.COMPETICION);
-		String hasta = request.getParameter(ParameterNames.FECHA);
+		String desde =  request.getParameter(ParameterNames.FECHA_DESDE);
+		String hasta = request.getParameter(ParameterNames.FECHA_HASTA);
 		String deporte = request.getParameter(ParameterNames.DEPORTE);
 		String participante = request.getParameter(ParameterNames.PARTICIPANTE);
+		
 
 		//Validar parametros
-		e.setIdEvento(ValidationUtils.longValidator(idEvento,errors,ParameterNames.EVENTO,false));
 		e.setIdCompeticion(ValidationUtils.longValidator(competicion,errors,ParameterNames.COMPETICION,false));
-		e.setFecha(ValidationUtils.dateValidator(hasta, errors,ParameterNames.FECHA_HASTA,false));
 		e.setIdDeporte(ValidationUtils.longValidator(deporte,errors,ParameterNames.DEPORTE,false));
 		e.setParticipante(ValidationUtils.stringValidator(participante,errors,ParameterNames.PARTICIPANTE,false));
+		
+		Date fechauno = ValidationUtils.dateValidator(desde,errors,ParameterNames.FECHA_DESDE, false);
+		if(fechauno!=null) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(fechauno); 
+			calendar.add(Calendar.DAY_OF_YEAR, 1);  
+			fechauno = calendar.getTime(); 
+			e.setFecha(fechauno);
+		}
+		Date fechados = ValidationUtils.dateValidator(hasta,errors,ParameterNames.FECHA_HASTA, false);
+		if(fechados!=null) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(fechados); 
+			calendar.add(Calendar.DAY_OF_YEAR, 2);  
+			fechados = calendar.getTime(); 
+			e.setFechaHasta(fechados);
+		}
 
 
 		try {
@@ -130,6 +150,28 @@ public class EventoServlet extends HttpServlet {
 				request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
 				request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
 				
+				//parametros de busqueda actuales
+				url = HttpUtils.createLinkToSelf(null, mapa);
+				request.setAttribute(ParameterNames.URL, url);
+				request.setAttribute(ParameterNames.PAGE, page);
+				
+				if(participante != null) {
+				request.setAttribute(ParameterNames.PARTICIPANTE, participante);
+				}
+				
+				if(hasta != null) {
+					request.setAttribute(ParameterNames.FECHA_DESDE, e.getFecha());
+				}
+				
+				if(desde != null) {
+					request.setAttribute(ParameterNames.FECHA_HASTA, e.getFechaHasta());
+				}
+				
+				
+				request.setAttribute(ParameterNames.COMPETICION, mapa.get(ParameterNames.COMPETICION)[0]);
+				request.setAttribute(ParameterNames.DEPORTE, mapa.get(ParameterNames.DEPORTE)[0]);
+				target=ViewPaths.HOME;
+				
 			} 
 			
 			if (errors.hasErrors()) {	
@@ -140,14 +182,7 @@ public class EventoServlet extends HttpServlet {
 		} catch (DataException ex) {
 			logger.warn(ex.getMessage(),ex);
 			
-		} finally {
-			//parametros de busqueda actuales
-			url = HttpUtils.createLinkToSelf(null, mapa);
-			
-			request.setAttribute(ParameterNames.URL, url);
-			request.setAttribute(ParameterNames.PAGE, page);
-			target=ViewPaths.HOME;
-		}
+		} 
 		
 		} else if (Actions.FIND_DETAIL.equalsIgnoreCase(action)) {
 			String idParamValue = request.getParameter(ParameterNames.ID);
@@ -163,22 +198,33 @@ public class EventoServlet extends HttpServlet {
 				logger.warn(e.getMessage(),e);
 			}			
 			
-			
 			target = ViewPaths.DETALLE;
+			
 		} else if (Actions.FIND_COMPETITION.equalsIgnoreCase(action)) {
 			
 			String idDeporte = request.getParameter(ParameterNames.ID);
 			Long id = Long.valueOf(idDeporte);
 			List<Competicion> competiciones;
-			
+
 			try {
 				competiciones = competicionService.findByDeporte(id);
-				request.setAttribute(AttributeNames.COMPETICIONES, competiciones);
+				
+				JsonObject competicion = null;
+				JsonArray array = new JsonArray();
+				for (Competicion c : competiciones) {
+					competicion = new JsonObject();
+					competicion.addProperty("id", c.getIdCompeticion());
+					competicion.addProperty("nome", c.getNome());
+					array.add(competicion);
+				}	
+				
+				response.setContentType("application/json;charset=ISO-8859-1");
+				response.getOutputStream().write(array.toString().getBytes());
+				
 			} catch (DataException e) {
 				logger.warn(e.getMessage(),e);
 			} 
 			
-			target = ViewPaths.HOME;
 		}else {
 			logger.error("Action desconocida");
 			logger.debug("Erro 404 - IP : "+ request.getRemoteAddr() +" - URI ");
@@ -186,12 +232,14 @@ public class EventoServlet extends HttpServlet {
 			redirect =  true;
 		}
 		
+		if(!Actions.FIND_COMPETITION.equalsIgnoreCase(action)) {
 		if(redirect) {
 			logger.info("Redirecting to "+target);
 			response.sendRedirect(request.getContextPath()+target);
 		} else {
 			logger.info("Forwarding to "+target);
 			request.getRequestDispatcher(target).forward(request, response);
+		}
 		}
 		
 	}

@@ -8,12 +8,14 @@
 <form action="<%=ControllerPaths.USUARIO%>" method="post">
 	<input type="hidden" name="<%=ParameterNames.ACTION%>"
 			value="<%=Actions.HISTORY%>"> 
-	<input type="checkbox" name="fecha" value="1"> Últimas 24 horas
-	<input type="checkbox" name="fecha" value="2"> Últimas 48 horas
+	<input class="historycheck" type="radio" name="fecha" value="1"> Últimas 24 horas
+	<input class="historycheck" type="radio" name="fecha" value="2"> Últimas 48 horas
 	
+	
+	<input class="historycheck" type="radio" name="fecha" value="3" checked>
 	<div id="findfecha">
-	<label>Desde</label><input type="date" name="desde">
-	<label>Hasta</label><input type="date" name="hasta">
+	<label>Desde</label><input type="date" name="fechadesde">
+	<label>Hasta</label><input type="date" name="fechahasta">
 	</div>
 	
 	<button type="submit">Buscar</button>

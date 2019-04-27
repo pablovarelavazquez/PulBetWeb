@@ -8,17 +8,17 @@ body, html {
 
 #header {
 	position: relative;
-	height: 80px;
+	height: 13%;
 	background: #14805e;
 	width: 100%;
 	color: white;
 }
 
 #logo {
-    position: absolute;
-    left: 10px;
-    top: 0px;
-    display: inline-block;
+	position: absolute;
+	left: 10px;
+	top: 0px;
+	display: inline-block;
 }
 
 #logo a img {
@@ -100,7 +100,7 @@ body, html {
 #usuario {
 	position: absolute;
 	width: 200px;
-	height: 100px;
+	height: 70px;
 	top: 15px;
 	right: 90px;
 	text-align: right
@@ -172,6 +172,11 @@ body, html {
 #register-form {
 	display: block;
 	min-height: 80%;
+}
+
+#search-form{
+	height: 5%;
+    background: azure;
 }
 
 #login-form {
@@ -270,7 +275,7 @@ body, html {
 	display: block;
 }
 
-.cuota{
+.cuota {
 	position: inherit;
 }
 
@@ -339,7 +344,7 @@ li, ul {
 .apuestahistorial {
 	margin-top: 16px;
 	background: white;
-	padding: 0px 10px 1px;
+	padding: 5px 20px 5px;
 	position: relative;
 }
 
@@ -364,12 +369,52 @@ li, ul {
 	right: 10px;
 }
 
+.lineadetalle {
+	    border: 1px solid grey;
+    position: relative;
+    margin-bottom: 2px;
+    height: 100px;
+}
+
+.lineadetalle p {
+	position: absolute;
+}
+
+.detres {
+	left: 2%;
+	top: 5%;
+}
+
+.detcuot {
+	right: 2%;
+	top: 5%;
+}
+
+.detev {
+	top: 38%;
+	left: 2%;
+}
+
+.dettipres{
+	top:70%;
+	left: 2%;
+}
+
+.detest{
+	top: 70%;
+    right: 2%;
+}
+
 .acertada {
 	color: green;
 }
 
 .fallada {
 	color: red;
+}
+
+.pendiente {
+	color: orange;
 }
 
 /*Menu desplegable*/

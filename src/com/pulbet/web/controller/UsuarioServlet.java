@@ -88,6 +88,10 @@ public class UsuarioServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		if(logger.isDebugEnabled()) {
+			logger.debug(ParameterUtils.print(request.getParameterMap()));
+		}
+		
 		String action = request.getParameter(ParameterNames.ACTION);
 
 		Errors errors = new Errors();
@@ -100,10 +104,6 @@ public class UsuarioServlet extends HttpServlet {
 
 		Map<String, String[]> mapa = new HashMap<String, String[]>(request.getParameterMap());
 		String url = "";
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
-		}
 
 		if(Actions.LOGIN.equalsIgnoreCase(action)) {
 
@@ -321,15 +321,16 @@ public class UsuarioServlet extends HttpServlet {
 					logger.debug("Fallo en el registro: {}", errors);
 				}
 				request.setAttribute(AttributeNames.ERRORS, errors);				
-				target = ViewPaths.REGISTRO;				
+				target = "/usuario?"+ParameterNames.ACTION+"="+Actions.PRE_REGISTRO;				
 			} else {				
 				SessionManager.set(request, SessionAttributeNames.USER, u);		
-				target = ViewPaths.HOME;				
+				target = "";	
+				redirect = true;
 			}
 
 
 		} 	else if (Actions.CHANGE_LOCALE.equalsIgnoreCase(action)) {
-			
+
 			String localeName = request.getParameter(ParameterNames.LOCALE);
 			// Recordar que hay que validar... lo que nos envian, incluso en algo como esto.
 			// Buscamos entre los Locale soportados por la web:
@@ -351,6 +352,10 @@ public class UsuarioServlet extends HttpServlet {
 
 			if((mapa.get(ParameterNames.URL)!=null) && !(mapa.get(ParameterNames.URL)[0].isEmpty())) {
 				url = HttpUtils.createCallbackURL(request, mapa.get(ParameterNames.URL)[0]);
+				
+				if((mapa.get(ParameterNames.PAGE)!=null) && !(mapa.get(ParameterNames.PAGE)[0].isEmpty())) {
+					url = HttpUtils.addParameterToURL(url, ParameterNames.PAGE,mapa.get(ParameterNames.PAGE)[0] , true);
+				}
 				target = url;
 				response.sendRedirect(target);
 			} else {
@@ -360,25 +365,75 @@ public class UsuarioServlet extends HttpServlet {
 
 		}else if (Actions.HISTORY.equalsIgnoreCase(action)){
 
+			String fecha = request.getParameter(ParameterNames.FECHA);
+			
+			String pageValue = null;
+			Integer page = null;
+			if(mapa.get(ParameterNames.PAGE)!=null) {
+				pageValue = mapa.get(ParameterNames.PAGE)[0];	
+				page = Integer.valueOf(pageValue);
+			}
+
 			mapa.remove(ParameterNames.PAGE);
 
 			Usuario u = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
 
 			Results<Apuesta> results = null;
-
 			ApuestaCriteria apuestaTipo = new ApuestaCriteria();
 			apuestaTipo.setIdUsuario(u.getIdUsuario());
 
+			Calendar now = Calendar.getInstance();
+			if(!(StringUtils.isEmptyOrWhitespaceOnly(fecha))) {
+				
+				if (fecha.equals("1")) {
+					now.add(Calendar.DAY_OF_YEAR, -1);
+					Date undia = now.getTime();
+					apuestaTipo.setDesde(undia);
+				} else if (fecha.equals("2")) {
+					now.add(Calendar.DAY_OF_YEAR, -2);
+					Date dosdias = now.getTime();
+					apuestaTipo.setDesde(dosdias);
+				} else {
+					String desde = request.getParameter(ParameterNames.FECHA_DESDE);
+					String hasta = request.getParameter(ParameterNames.FECHA_HASTA);
+					
+					Date fechauno = ValidationUtils.dateValidator(desde,errors,ParameterNames.FECHA_DESDE, false);
+					if(fechauno!=null) {
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(fechauno); 
+						calendar.add(Calendar.DAY_OF_YEAR, 1);  
+						fechauno = calendar.getTime(); 
+						apuestaTipo.setDesde(fechauno);
+					}
+					Date fechados = ValidationUtils.dateValidator(hasta,errors,ParameterNames.FECHA_HASTA, false);
+					if(fechados!=null) {
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(fechados); 
+						calendar.add(Calendar.DAY_OF_YEAR, 2);  
+						fechados = calendar.getTime(); 
+						apuestaTipo.setHasta(fechados);
+					}
+				}
+					
+				
+			}
+
+			
+
 			try {
 
-				int page = WebUtils.
+				page = WebUtils.
 						getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
+				
 
-				results = apuestaService.findHistorial(apuestaTipo,(page-1)*pageSize+1,pageSize);
+				results = apuestaService.findByCriteria(apuestaTipo,true,(page-1)*pageSize+1,pageSize);
 
 				// Resultados de la busqueda (siempre preparar comodos para renderizar)
 				request.setAttribute(AttributeNames.RESULTADOS, results.getPage());
 				request.setAttribute(AttributeNames.TOTAL, results.getTotal());
+				
+				//ao cambiar a jstl empregar os de arriba e eliminar este
+				request.setAttribute(AttributeNames.APUESTAS, results);
 
 				// Datos para paginacion															
 				// (Calculos aqui, datos comodos para renderizar)
@@ -389,19 +444,19 @@ public class UsuarioServlet extends HttpServlet {
 				request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
 				request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
 				request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
-
+				
 				//parametros de busqueda actuales
-
-				url = ParameterUtils.URLBuilder(url, mapa);
+				url = HttpUtils.createLinkToSelf(null, mapa);
 				request.setAttribute(ParameterNames.URL, url);
+				request.setAttribute(ParameterNames.PAGE, page);
+				target = ViewPaths.HISTORY;
 
 
 			} catch (DataException e) {
 				logger.warn(e.getMessage(),e);
 			}
 
-			request.setAttribute(AttributeNames.APUESTAS, results);
-			target = ViewPaths.HISTORY;
+			
 
 
 		} else if (Actions.OPENBETS.equalsIgnoreCase(action)){
@@ -415,7 +470,7 @@ public class UsuarioServlet extends HttpServlet {
 
 			try {
 
-				apuestas = apuestaService.findOpenBets(apuestaTipo, 1, 10);
+				apuestas = apuestaService.findByCriteria(apuestaTipo,false, 1, 100);				
 
 			} catch (DataException e) {
 				logger.warn(e.getMessage(),e);
@@ -557,11 +612,12 @@ public class UsuarioServlet extends HttpServlet {
 					logger.debug("Fallo en la edicion: {}", errors);
 				}
 				request.setAttribute(AttributeNames.ERRORS, errors);				
-				target = ViewPaths.EDITPROFILE;				
+				target = "/usuario?"+ParameterNames.ACTION+"="+Actions.PRE_EDIT;				
 			} else {				
 
 				SessionManager.set(request, SessionAttributeNames.USER, usuario);		
-				target = ViewPaths.HOME;				
+				target = "";
+				redirect = true;
 			}
 
 
@@ -580,7 +636,7 @@ public class UsuarioServlet extends HttpServlet {
 			newPassword = ValidationUtils.passwordValidator(newPassword, errors, ParameterNames.NEW_PASSWORD, true);
 			repeatPassword = ValidationUtils.passwordValidator(repeatPassword, errors, ParameterNames.REPEAT_PASSWORD, true);
 
-			
+
 			logger.debug(password);
 			logger.debug(newPassword);
 			logger.debug(repeatPassword);
@@ -717,6 +773,7 @@ public class UsuarioServlet extends HttpServlet {
 				request.getRequestDispatcher(target).forward(request, response);
 			}
 		}
+
 
 
 

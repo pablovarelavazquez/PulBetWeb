@@ -1,52 +1,59 @@
 <%@ page
-	import="com.pvv.pulbet.model.*, java.util.*,  com.pulbet.web.controller.* , com.pvv.pulbet.service.*"%>
+	import="com.pvv.pulbet.model.*, java.util.*,  com.pulbet.web.controller.* , com.pvv.pulbet.service.*, com.pulbet.web.util.*"%>
 
+<%
+		List<Evento> results = (List<Evento>) request.getAttribute(AttributeNames.RESULTADOS);
+
+		if (results != null) {
+			if (results.isEmpty()) {
+	%>
+				<p>No hemos encontrado resultados para esa busqueda</p>
+<%
+		}
+		}
+		%>
 
 <div class="results">
 	<c:if test="${not empty resultados}">
-	
-		<%--<p>${url}</p>--%>
+
 		<p>
 			<fmt:message key="resultados" bundle="${messages}" />
 		</p>
 
 
-		
-			<c:forEach var="r" items="${resultados}">
+
+		<c:forEach var="r" items="${resultados}">
 
 
-				<c:url var="urlDetalle" scope="page" value="evento">
-					<c:param name="action" value="<%=Actions.FIND_DETAIL%>" />
-					<c:param name="id" value="${r.idEvento}" />
-				</c:url>
+			<c:url var="urlDetalle" scope="page" value="evento">
+				<c:param name="action" value="<%=Actions.FIND_DETAIL%>" />
+				<c:param name="id" value="${r.idEvento}" />
+			</c:url>
+			<c:set var="date" scope="page"
+				value="${DateUtils.WITH_HOUR_FORMAT.format(r.getFecha())}" />
+			<c:set var="mercado" scope="page" value="${r.getMercados().get(0)}" />
+			<c:set var="resultados" scope="page"
+				value="${mercado.getResultados()}" />
 
-				<c:set var="mercado" scope="page" value="${r.getMercados().get(0)}" />
-				<c:set var="resultados" scope="page" value="${mercado.getResultados()}" />
+			<a class="titulodetalle" class="mercado" href="${urlDetalle}">${r.getLocal().getNome()}
+				vs ${r.getVisitante().getNome()} - ${date}</a>
+			<div class="mercado">
+				<p class="titulodetalle">${mercado.getNome()}</p>
+				<c:forEach var="resultado" items="${resultados}">
 
-				<a class="titulodetalle" class="mercado"
-					href="${urlDetalle}">${r.getLocal().getNome()} vs
-						${r.getVisitante().getNome()} - ${r.getFecha()}</a>
-				<div class="mercado">
-					<p class="titulodetalle">${mercado.getNome()}</p>
-					<c:forEach var="resultado" items="${resultados}">
 
-<%-- 	 					<c:url var="urlCuota" scope="page" value="carrito">
-							<c:param name="action" value="<%=Actions.ADD_CARRITO%>" />
-							<c:param name="idevento" value="${resultado.idEvento}" />
-							<c:param name="idresultado" value="${resultado.idResultado}" />
-							<c:param name="url" value="${url}" />
-						</c:url> --%>
-						<div class="resultado">
-							<p>${resultado.getNombre()}</p>
+					<div class="resultado">
+						<p>${resultado.getNombre()}</p>
 
-							<a class="cuota" data-evento="${resultado.idEvento}" data-resultado="${resultado.idResultado}">${resultado.getCuota()}</a>
-						</div>
-					</c:forEach>
-				</div>
+						<a class="cuota" data-evento="${resultado.idEvento}"
+							data-resultado="${resultado.idResultado}">${resultado.getCuota()}</a>
+					</div>
+				</c:forEach>
+			</div>
 
-			</c:forEach>
+		</c:forEach>
 
-		
+
 
 
 		<!-- Paxinacion -->
@@ -55,8 +62,8 @@
 
 			<!-- A la anterior pagina -->
 			<c:if test="${page > 1}">
-				<a href="${url}&page=${page - 1}"> <fmt:message
-						key="Anterior" bundle="${messages}" />
+				<a href="${url}&page=${page - 1}"> 
+				<fmt:message key="anterior" bundle="${messages}" />
 				</a>
 			&nbsp;&nbsp;
 			</c:if>
@@ -89,13 +96,14 @@
 			<!-- A la siguiente página -->
 			<c:if test="${page < totalPages}">
 				&nbsp;&nbsp;		
-				<a href="${url}&page=${page + 1}"> <fmt:message
-						key="siguiente" bundle="${messages}" />
+				<a href="${url}&page=${page + 1}"> <fmt:message key="siguiente"
+						bundle="${messages}" />
 				</a>
 			</c:if>
-			</center></p>
+		</center>
+		</p>
 	</c:if>
-
+	
 </div>
 
 

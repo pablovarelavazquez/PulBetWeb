@@ -28,6 +28,8 @@
 	if (errors == null)
 		errors = new Errors();
 %>
+
+<c:set var="errors" scope="session" value ="${errors}"/>
 <body>
 
 	<div id="header">

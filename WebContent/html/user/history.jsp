@@ -1,121 +1,69 @@
 <%@ page
-	import="com.pvv.pulbet.model.*, java.util.*,  com.pulbet.web.controller.* , com.pvv.pulbet.service.*"%>
-
-<%
-	Results<Apuesta> apuestas = (Results<Apuesta>) request.getAttribute(AttributeNames.APUESTAS);
-
-	if (apuestas != null) {
-
-		if (apuestas.getPage().isEmpty()) {
-%>
-<div id="history">
-<p>No hemos encontrado apuestas para esos criterios. Pruebe a
-	modificar los criterios.</p>
-</div>
-<%
-	} else {
-%>
-
-
+	import="com.pvv.pulbet.model.*, java.util.*,  com.pulbet.web.controller.*, com.pulbet.web.util.* , com.pvv.pulbet.service.*"%>
 
 <div id="history">
-	<%
-		for (Apuesta a : apuestas.getPage()) {
-					if (a.getLineas().size() > 1) {
-	%>
-	<div class="apuestahistorial">
-		<p class="fechaapuesta"><%=a.getFecha()%></p>
-		<p class="idapuesta">
-			Id Apuesta:
-			<%=a.getIdApuesta()%></p>
-		<p>Simple</p>
-		<p>
-			Cuotas:
-			<%=String.format("%.2f", a.getGanancias()/a.getImporte())%></p>
-
-		<p>
-			Importe:
-			<%=a.getImporte()%></p>
-		<%
-			if (a.getProcesado() == 1) {
-		%>
-		<div class="acertada">
-			<p>
-				Ganancias:
-				<%=a.getGanancias()%></p>
-		</div>
-		<%
-			} else {
-		%>
-		<div class="fallada">
-			<p>Ganancias: 0.00</p>
-		</div>
-		<%
-			}
-		%>
-
-
-		<p class="masdetalles">Mas detalles</p>
-	</div>
 
 	<%
-		} else {
+		List<Apuesta> apuestas = (List<Apuesta>) request.getAttribute(AttributeNames.RESULTADOS);
+
+		if (apuestas != null) {
+			if (apuestas.isEmpty()) {
 	%>
-	<div class="apuestahistorial">
-		<p class="fechaapuesta"><%=a.getFecha()%></p>
-		<p class="idapuesta">
-			Id Apuesta:
-			<%=a.getIdApuesta()%></p>
-		<p>
-			Combinada:
-			<%=a.getLineas().size()%>
-			eventos
-		</p>
-
-		<p>
-			Cuotas:
-			<%=String.format("%.2f", a.getGanancias()/a.getImporte())%></p>
-
-		<p>
-			Importe:
-			<%=a.getImporte()%></p>
-		<%
-			if (a.getProcesado() == 1) {
-		%>
-		<div class="acertada">
-			<p>
-				Ganancias:
-				<%=a.getGanancias()%></p>
-		</div>
-		<%
-			} else {
-		%>
-		<div class="fallada">
-			<p>Ganancias: 0.00</p>
-		</div>
-		<%
-			}
-		%>
-
-
-
-		<p class="masdetalles">Mas detalles</p>
-	</div>
-
+	<p>No se han encontrado resultados para esos criterios de busqueda.
+		Pruebe a modificarlos</p>
 	<%
 		}
+		}
 
-				}
+		if (apuestas == null) {
 	%>
-</div>
-<!-- Paxinacion -->
+	<p>Introduzca los criterios para la busqueda de resultados</p>
+	<%
+		}
+	%>
+
+
+	<c:if test="${not empty resultados}">
+		<c:forEach var="a" items="${resultados}">
+
+			<div class="apuestahistorial">
+				<p class="fechaapuesta">${DateUtils.WITH_HOUR_FORMAT.format(a.getFecha())}</p>
+				<p class="idapuesta">Id Apuesta: ${a.getIdApuesta()}</p>
+				<c:if test="${a.getLineas().size() > 1}">
+					<p>Combinada: ${a.getLineas().size()} eventos</p>
+				</c:if>
+				<c:if test="${a.getLineas().size() <= 1}">
+					<p>Simple</p>
+				</c:if>
+				<p>Cuotas: ${a.getGanancias() / a.getImporte()}</p>
+				<p>Importe: ${a.getImporte()}</p>
+				<c:if test="${a.getProcesado() == 1}">
+					<div class="acertada">
+						<p>Ganancias: ${a.getGanancias()}</p>
+					</div>
+				</c:if>
+				<c:if test="${a.getProcesado() != 1}">
+					<div class="fallada">
+						<p>Ganancias: 0.00</p>
+					</div>
+				</c:if>
+				<div class="masdetalle" data-id="${a.getIdApuesta()}">
+					<p>Detalles</p>
+					<div class="fillo"></div>
+				</div>
+			</div>
+		</c:forEach>
+
+
+
+		<!-- Paxinacion -->
 		<p>
 		<center>
 
 			<!-- A la anterior pagina -->
 			<c:if test="${page > 1}">
-				<a href="${url}&page=${page - 1}"> <fmt:message
-						key="Anterior" bundle="${messages}" />
+				<a href="${url}&page=${page - 1}"> <fmt:message key="Anterior"
+						bundle="${messages}" />
 				</a>
 			&nbsp;&nbsp;
 			</c:if>
@@ -148,19 +96,12 @@
 			<!-- A la siguiente página -->
 			<c:if test="${page < totalPages}">
 				&nbsp;&nbsp;		
-				<a href="${url}&page=${page + 1}"> <fmt:message
-						key="siguiente" bundle="${messages}" />
+				<a href="${url}&page=${page + 1}"> <fmt:message key="siguiente"
+						bundle="${messages}" />
 				</a>
 			</c:if>
-			</center></p>
+		</center>
+	</p>
+	</c:if>
 
-<%
-	}
-	} else {
-%>
-<div id="history">
-	<p>Seleccione los criterios para la busqueda.</p>
 </div>
-<%
-	}
-%>

@@ -15,13 +15,6 @@
 			%>
 			<input type="hidden" name="<%=ParameterNames.ACTION%>"
 				value="<%=Actions.INGRESAR%>" /> 
-			<%
-					parameterErrors = errors.showErrors(ParameterNames.ACTION);
-					for (String error: parameterErrors) {
-						%><li><%=error%></li>
-			<%
-					}
-				%>
 			
 			<div class = "cuadroform">
 			<label>IBAN: </label>	

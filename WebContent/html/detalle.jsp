@@ -23,11 +23,13 @@
 		%>
 		<div class="resultado">
 			<p><%=r.getNombre()%></p>
-			<a
+<%-- 			<a
 				href="<%=(ControllerPaths.CARRITO + "?")%>
 				<%=ParameterNames.ACTION%>=<%=Actions.ADD_CARRITO%>&amp;<%=ParameterNames.ID_EVENTO%>=<%=evento.getIdEvento()%>
 				&amp;<%=ParameterNames.ID_RESULTADO%>=<%=r.getIdResultado()%>">
-				<%=r.getCuota()%></a>
+				<%=r.getCuota()%></a> --%>
+				
+				<a class="cuota" data-evento="<%=evento.getIdEvento()%>" data-resultado="<%=r.getIdResultado()%>"><%=r.getCuota()%></a>
 		</div>
 		<%
 			}
