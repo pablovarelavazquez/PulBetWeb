@@ -23,13 +23,7 @@
 
 
 </head>
-<%
-	Errors errors = (Errors) request.getAttribute(AttributeNames.ERRORS);
-	if (errors == null)
-		errors = new Errors();
-%>
-
-<c:set var="errors" scope="session" value ="${errors}"/>
+<c:set var="errors" scope="page" value ="${errors}"/>
 <body>
 
 	<div id="header">

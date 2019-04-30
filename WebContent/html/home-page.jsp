@@ -1,8 +1,7 @@
 <%@include file="/html/common/header.jsp"%>
 
 <%@include file="/html/buscador-page.jsp"%>
-<%@include file="/html/common/left.jsp"%>
-<%@include file="/html/common/right.jsp"%>
+<%@include file="/html/carrito.jsp"%>
 <div id="home">
 <%@include file="/html/contenido.jsp"%>
 </div>

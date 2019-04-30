@@ -11,112 +11,124 @@
 
 
 <div id="register-form">
-	<h3>Editar usuario</h3>
+	<h3>
+		<fmt:message key="editMessage" bundle="${messages}" />
+	</h3>
 
 	<form action="<%=ControllerPaths.USUARIO%>" method="post">
-		<%
-			List<String> parameterErrors = errors.showErrors(ParameterNames.ACTION);
-			for (String error : parameterErrors) {
-		%><li><%=error%></li>
-		<%
-			}
-		%>
+		<c:set var="parameterErrors" scope="page"
+			value="${errors.showErrors(ParameterNames.ACTION)}" />
+		<c:forEach var="e" items="${parameterErrors}">
+			<li><fmt:message key="${e}" bundle="${messages}" /></li>
+		</c:forEach>
 
 		<input type="hidden" name="<%=ParameterNames.ACTION%>"
 			value="<%=Actions.EDITPROFILE%>" /> <br>
 		<fieldset>
-			<legend>Informacion de usuario</legend>
-			<label>Nombre: </label> <input name="nombre" type="text"
-				placeholder="Nome" value="<%=usuario.getNome()%>">
-			<%
-				parameterErrors = errors.showErrors(ParameterNames.NOMBRE);
-				for (String error : parameterErrors) {
-			%><li><%=error%></li>
-			<%
-				}
-			%>
-			<label>Email: </label> <input name="<%=ParameterNames.REG_EMAIL%>"
-				type="email" placeholder="Email" value="<%=usuario.getEmail()%>">
-			<%
-				parameterErrors = errors.showErrors(ParameterNames.REG_EMAIL);
-				for (String error : parameterErrors) {
-			%><li><%=error%></li>
-			<%
-				}
-			%>
-			<label>Apellido 1: </label> <input name="apelido1" type="text"
-				placeholder="Apelido1" value="<%=usuario.getApelido1()%>">
-			<%
-				parameterErrors = errors.showErrors(ParameterNames.APELIDO1);
-				for (String error : parameterErrors) {
-			%><li><%=error%></li>
-			<%
-				}
-			%>
+			<legend>
+				<fmt:message key="userInformation" bundle="${messages}" />
+			</legend>
+			
+			<label><fmt:message key="name" bundle="${messages}" /> </label> <input
+				name="nombre" type="text" value="<%=usuario.getNome()%>">
 
-			<label>Apellido 2: </label> <input name="apelido2" type="text"
-				placeholder="Apelido2" value="<%=usuario.getApelido2()%>">
-			<%
-				parameterErrors = errors.showErrors(ParameterNames.APELIDO2);
-				for (String error : parameterErrors) {
-			%><li><%=error%></li>
-			<%
-				}
-			%>
-			<br> <label>Fecha de Nacimiento: </label> <input name="fnac"
-				type="date" placeholder="Fecha Nacimiento"
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.NOMBRE)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<label><fmt:message key="email" bundle="${messages}" /> </label> <input
+				name="<%=ParameterNames.REG_EMAIL%>" type="email"
+				value="<%=usuario.getEmail()%>">
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.REG_EMAIL)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<label><fmt:message key="apelido1" bundle="${messages}" /> </label>
+			<input name="apelido1" type="text" value="<%=usuario.getApelido1()%>">
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.APELIDO1)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<label><fmt:message key="apelido2" bundle="${messages}" /> </label>
+			<input name="apelido2" type="text" value="<%=usuario.getApelido2()%>">
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.APELIDO2)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<br> <label><fmt:message key="bbday"
+					bundle="${messages}" /> </label> <input name="fnac" type="date"
 				value="<%=u.getFechaNacimiento()%>">
-			<%
-				parameterErrors = errors.showErrors(ParameterNames.FECHA_NACIMIENTO);
-				for (String error : parameterErrors) {
-			%><li><%=error%></li>
-			<%
-				}
-			%>
-			<label>Telefono: </label> <input name="telefono" type="text"
-				placeholder="Telefono" value="<%=usuario.getTelefono()%>">
-			<%
-				parameterErrors = errors.showErrors(ParameterNames.TELEFONO);
-				for (String error : parameterErrors) {
-			%><li><%=error%></li>
-			<%
-				}
-			%>
-			<label>Nombre de Usuario: </label> <input name="nomeusuario"
-				type="text" placeholder="Nome Usuario"
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.FECHA_NACIMIENTO)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+
+			<label><fmt:message key="telefono" bundle="${messages}" /> </label>
+			<input name="telefono" type="text" value="<%=usuario.getTelefono()%>">
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.TELEFONO)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<label><fmt:message key="userName" bundle="${messages}" /> </label>
+			<input name="nomeusuario" type="text"
 				value="<%=usuario.getNomeUsuario()%>">
-			<%
-				parameterErrors = errors.showErrors(ParameterNames.NOME_USUARIO);
-				for (String error : parameterErrors) {
-			%><li><%=error%></li>
-			<%
-				}
-			%>
-			<br> <label>DNI: </label> <input name="dni" type="text"
-				placeholder="DNI" value="<%=usuario.getDNI()%>">
-			<%
-				parameterErrors = errors.showErrors(ParameterNames.DNI);
-				for (String error : parameterErrors) {
-			%><li><%=error%></li>
-			<%
-				}
-			%>
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.NOME_USUARIO)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<br> <label><fmt:message key="dni" bundle="${messages}" />
+			</label> <input name="dni" type="text" value="<%=usuario.getDNI()%>">
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.DNI)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
 		</fieldset>
+
 		<br> <br> <br>
+
 		<fieldset>
-			<legend>Direccion</legend>
+			<legend>
+				<fmt:message key="address" bundle="${messages}" />
+			</legend>
 
-			<label>Ciudad: </label> <input name="cidade" type="text"
-				placeholder="Cidade" value="<%=usuario.getDireccion().getCiudad()%>">
-			<%
-				parameterErrors = errors.showErrors(ParameterNames.CIDADE);
-				for (String error : parameterErrors) {
-			%><li><%=error%></li>
-			<%
-				}
-			%>
+			<label><fmt:message key="city" bundle="${messages}" />: </label> <input
+				name="cidade" type="text"
+				value="<%=usuario.getDireccion().getCiudad()%>">
 
-			<label>Pais: </label> <select name="pais" id="editpaises">
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.CIDADE)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<label><fmt:message key="country" bundle="${messages}" /> </label> 
+			
+			<select
+				name="pais" id="editpaises">
+
 				<c:forEach var="p" items="${paises}">
 					<c:if test="${p.getIdPais() == pais}">
 						<option value="${p.getIdPais()}" selected>${p.getNome()}</option>
@@ -125,8 +137,11 @@
 						<option value="${p.getIdPais()}">${p.getNome()}</option>
 					</c:if>
 				</c:forEach>
-			</select> <label>Provincia: </label> <select name="provincia"
-				id="editprovincias">
+
+			</select> 
+			<label><fmt:message key="provincia" bundle="${messages}" /></label> 
+			<select name="provincia" id="editprovincias">
+
 				<c:forEach var="p" items="${provincias}">
 					<c:if
 						test="${p.getIdProvincia() == sessionScope['user'].getDireccion().getIdProvincia()}">
@@ -138,95 +153,118 @@
 					</c:if>
 
 				</c:forEach>
-			</select> <label>Calle: </label> <input name="calle" type="text"
-				placeholder="Calle" value="<%=usuario.getDireccion().getCalle()%>">
-			<%
-					parameterErrors = errors.showErrors(ParameterNames.CALLE);
-					for (String error : parameterErrors) {
-				%><li><%=error%></li>
-			<%
-					}
-				%>
-			<label>Numero: </label> <input name="numero" type="text"
-				placeholder="Numero" value="<%=usuario.getDireccion().getNumero()%>">
-			<%
-					parameterErrors = errors.showErrors(ParameterNames.NUMERO);
-					for (String error : parameterErrors) {
-				%><li><%=error%></li>
-			<%
-					}
-				%>
-			<br> <label>Codigo postal: </label> <input name="codpostal"
-				type="text" placeholder="Codigo Postal"
+			</select> 
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.PROVINCIA)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+			
+			<label><fmt:message key="street" bundle="${messages}" /> </label> <input
+				name="calle" type="text"
+				value="<%=usuario.getDireccion().getCalle()%>">
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.CALLE)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<label><fmt:message key="number" bundle="${messages}" /> </label> <input
+				name="numero" type="text"
+				value="<%=usuario.getDireccion().getNumero()%>">
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.NUMERO)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<br> <label><fmt:message key="postalCode"
+					bundle="${messages}" /> </label> <input name="codpostal" type="text"
 				value="<%=usuario.getDireccion().getCodPostal()%>">
-			<%
-					parameterErrors = errors.showErrors(ParameterNames.COD_POSTAL);
-					for (String error : parameterErrors) {
-				%><li><%=error%></li>
-			<%
-					}
-				%>
-			<label>Piso: </label> <input name="piso" type="text"
-				placeholder="Piso" value="<%=usuario.getDireccion().getPiso()%>">
-			<%
-					parameterErrors = errors.showErrors(ParameterNames.PISO);
-					for (String error : parameterErrors) {
-				%><li><%=error%></li>
-			<%
-					}
-				%>
-			<label>Letra: </label> <input name="letra" type="text"
-				placeholder="Letra" value="<%=usuario.getDireccion().getLetra()%>">
-			<%
-					parameterErrors = errors.showErrors(ParameterNames.LETRA);
-					for (String error : parameterErrors) {
-				%><li><%=error%></li>
-			<%
-					}
-				%>
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.COD_POSTAL)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<label><fmt:message key="piso" bundle="${messages}" /> </label> 
+			<c:if test="${not empty sessionScope['user'].getDireccion().getPiso() }">
+			<input
+				name="piso" type="text"
+				value="<%=usuario.getDireccion().getPiso()%>">
+			</c:if>
+			<c:if test="${empty sessionScope['user'].getDireccion().getPiso() }">
+			<input
+				name="piso" type="text">
+			</c:if>
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.PISO)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<label>
+			<fmt:message key="letra" bundle="${messages}" /> </label> 
+			<c:if test="${not empty sessionScope['user'].getDireccion().getLetra()}">
+			<input
+				name="letra" type="text"
+				value="<%=usuario.getDireccion().getPiso()%>">
+			</c:if>
+			<c:if test="${empty sessionScope['user'].getDireccion().getLetra()}">
+			<input
+				name="letra" type="text">
+			</c:if>
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.LETRA)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
 
 		</fieldset>
-		<br> <br> <input type="submit" value="Editar">
+		<br> <br> <input type="submit" value=" <fmt:message key="editar" bundle="${messages}"/> ">
 	</form>
 
 	<form action="<%=ControllerPaths.USUARIO%>" method="post">
 		<fieldset>
-			<legend>Cambiar contraseña</legend>
-			
-			<input type="hidden" name="<%=ParameterNames.ACTION%>"
-				value="<%=Actions.CHANGE_PASSWORD%>" /> 
-				
-			<input type="password"
-				name="<%=ParameterNames.PASSWORD%>" placeholder="Antigua contraseña">
-			<%
-					parameterErrors = errors.showErrors(ParameterNames.PASSWORD);
-					for (String error : parameterErrors) {
-				%><li><%=error%></li>
-			<%
-					}
-				%>	
-				
-			<input type="password"
-				name="<%=ParameterNames.NEW_PASSWORD%>" placeholder="Nueva contraseña">
-			<%
-					parameterErrors = errors.showErrors(ParameterNames.NEW_PASSWORD);
-					for (String error : parameterErrors) {
-				%><li><%=error%></li>
-			<%
-					}
-				%>
+			<legend>
+				<fmt:message key="changePass" bundle="${messages}" />
+			</legend>
 
-			<input type="password" name="<%=ParameterNames.REPEAT_PASSWORD%>"
-				placeholder="Repetir contraseña"> 
-			<%
-					parameterErrors = errors.showErrors(ParameterNames.REPEAT_PASSWORD);
-					for (String error : parameterErrors) {
-				%><li><%=error%></li>
-			<%
-					}
-				%>	
-				<input type="submit"
-				value="Cambiar">
+			<label><fmt:message key="oldpass" bundle="${messages}" /> </label> <input
+				type="hidden" name="<%=ParameterNames.ACTION%>"
+				value="<%=Actions.CHANGE_PASSWORD%>" /> <input type="password"
+				name="<%=ParameterNames.PASSWORD%>">
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.PASSWORD)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<label><fmt:message key="newpass" bundle="${messages}" /> </label> <input
+				type="password" name="<%=ParameterNames.NEW_PASSWORD%>">
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.NEW_PASSWORD)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<label><fmt:message key="repeatpass" bundle="${messages}" />
+			</label> <input type="password" name="<%=ParameterNames.REPEAT_PASSWORD%>">
+
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.REPEAT_PASSWORD)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			</c:forEach>
+
+			<input type="submit" value=" <fmt:message key="cambiar" bundle="${messages}"/> ">
 		</fieldset>
 	</form>
 </div>

@@ -7,6 +7,6 @@
 <title>Error 404</title>
 </head>
 <body>
-<h3>Página no encontrada!</h3>
+<h3><fmt:message key="error404" bundle="${messages}" /></h3>
 </body>
 </html>

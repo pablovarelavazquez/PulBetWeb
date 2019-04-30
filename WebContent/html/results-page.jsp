@@ -1,17 +1,11 @@
 <%@ page
 	import="com.pvv.pulbet.model.*, java.util.*,  com.pulbet.web.controller.* , com.pvv.pulbet.service.*, com.pulbet.web.util.*"%>
 
-<%
-		List<Evento> results = (List<Evento>) request.getAttribute(AttributeNames.RESULTADOS);
-
-		if (results != null) {
-			if (results.isEmpty()) {
-	%>
-				<p>No hemos encontrado resultados para esa busqueda</p>
-<%
-		}
-		}
-		%>
+<c:if test="${resultados != null}">
+	<c:if test="${empty resultados}">
+		<p>No hemos encontrado resultados para esa busqueda</p>
+	</c:if>
+</c:if>
 
 <div class="results">
 	<c:if test="${not empty resultados}">

@@ -5,7 +5,7 @@
 
 	<c:if test="${(not empty eventos) && (empty resultados)}">
 	
-		<p>Proximos eventos:</p>
+		<p><label><fmt:message key="next" bundle="${messages}" /> </label></p>
 		
 		<c:if test="${not empty eventos.getPage()}">
 			
@@ -36,14 +36,9 @@
 					</c:forEach>
 				</div>
 							
-							
-							
 				</c:forEach>
 			
-			
-			
 		</c:if>
-		
 
 	</c:if>
 	

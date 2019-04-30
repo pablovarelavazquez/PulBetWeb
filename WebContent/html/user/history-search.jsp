@@ -8,17 +8,17 @@
 <form action="<%=ControllerPaths.USUARIO%>" method="post">
 	<input type="hidden" name="<%=ParameterNames.ACTION%>"
 			value="<%=Actions.HISTORY%>"> 
-	<input class="historycheck" type="radio" name="fecha" value="1"> Últimas 24 horas
-	<input class="historycheck" type="radio" name="fecha" value="2"> Últimas 48 horas
+	<input class="historycheck" type="radio" name="fecha" value="1"><fmt:message key="ult24" bundle="${messages}" />
+	<input class="historycheck" type="radio" name="fecha" value="2"><fmt:message key="ult48" bundle="${messages}" />
 	
 	
 	<input class="historycheck" type="radio" name="fecha" value="3" checked>
 	<div id="findfecha">
-	<label>Desde</label><input type="date" name="fechadesde">
-	<label>Hasta</label><input type="date" name="fechahasta">
+	<label><fmt:message key="desde" bundle="${messages}" /> </label><input type="date" name="fechadesde">
+	<label><fmt:message key="hasta" bundle="${messages}" /> </label><input type="date" name="fechahasta">
 	</div>
 	
-	<button type="submit">Buscar</button>
+	<button type="submit"><fmt:message key="find" bundle="${messages}" /></button>
 </form>
 </div>
 

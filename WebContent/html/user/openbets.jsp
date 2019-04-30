@@ -3,127 +3,47 @@
 
 <%@include file="/html/common/header.jsp"%>
 
-<%
-	Results<Apuesta> apuestas = (Results<Apuesta>) request.getAttribute(AttributeNames.APUESTAS);
-
-	if (apuestas.getPage().isEmpty()) {
-%>
 <div id="history">
-	<p>No tienes apuestas abiertas en este momento.</p>
+	<c:if test="${empty apuestas}">
+		<p><fmt:message key="notOpenBets" bundle="${messages}" /></p>
+	</c:if>
+	<c:if test="${not empty apuestas}">
+		<c:forEach var="a" items="${apuestas}">
+
+			<div class="apuestahistorial">
+				<p class="fechaapuesta">${DateUtils.WITH_HOUR_FORMAT.format(a.getFecha())}</p>
+				<p class="idapuesta">
+					<fmt:message key="betId" bundle="${messages}" />
+					${a.getIdApuesta()}
+				</p>
+				<c:if test="${a.getLineas().size() > 1}">
+					<p>
+						<fmt:message key="combin" bundle="${messages}">
+							<fmt:param value="${a.getLineas().size()}" />
+						</fmt:message>
+					</p>
+				</c:if>
+				<c:if test="${a.getLineas().size() <= 1}">
+					<p><fmt:message key="simple" bundle="${messages}" /></p>
+				</c:if>
+				<p>
+					<fmt:message key="cuotas" bundle="${messages}" />
+					${a.getGanancias() / a.getImporte()}
+				</p>
+				<p>
+					<fmt:message key="import" bundle="${messages}" />
+					${a.getImporte()}
+				</p>
+				<div class="masdetalle" data-id="${a.getIdApuesta()}">
+					<p>
+						<fmt:message key="details" bundle="${messages}" />
+					</p>
+					<div class="fillo"></div>
+				</div>
+
+			</div>
+		</c:forEach>
+	</c:if>
+
 </div>
-<%
-	} else {
-%>
-
-<div id="history">
-	<%
-			for (Apuesta a : apuestas.getPage()) {	
-				if(a.getLineas().size() > 1){
-					%>
-	<div class="apuestahistorial">
-		<p class="fechaapuesta"><%=DateUtils.WITH_HOUR_FORMAT.format(a.getFecha())%></p>
-		<p class="idapuesta">
-			Id Apuesta:
-			<%=a.getIdApuesta()%></p>
-		<p>
-			Combinada:
-			<%=a.getLineas().size()%>
-			eventos
-		</p>
-		<p>
-			Cuotas:
-			<%=(a.getGanancias()/a.getImporte())%></p>
-		<p>
-			Importe:
-			<%=a.getImporte()%></p>
-
-		<%
-			
-						if(a.getProcesado() ==  0){
-							%>
-		<p>Estado: <p class="pendiente">PENDIENTE</p></p>
-
-		<%
-			
-							}
-							if(a.getProcesado() ==  1){
-							%>
-		<p>Estado: <p class="acertada">ACERTADA</p></p>
-
-		<%
-			
-							}
-							if(a.getProcesado() ==  2){
-							%>
-		<p>Estado: <p class="fallada">FALLADA</p></p>
-
-		<%
-			
-							}
-							%>
-		<div class="masdetalle" data-id="<%=a.getIdApuesta()%>">
-			<p>Detalles</p>
-			<div class="fillo"></div>
-		</div>
-		
-	</div>
-
-	<%
-				} else { 
-					%>
-	<div class="apuestahistorial">
-		<p class="fechaapuesta"><%=DateUtils.WITH_HOUR_FORMAT.format(a.getFecha())%></p>
-		<p class="idapuesta">
-			Id Apuesta:
-			<%=a.getIdApuesta()%></p>
-		<p>
-			 Simple
-		</p>
-		<p>
-			Cuotas:
-			<%=(a.getGanancias()/a.getImporte())%></p>
-		<p>
-			Importe:
-			<%=a.getImporte()%></p>
-
-		<%
-			
-							if(a.getProcesado() ==  0){
-							%>
-		<p>Estado: <p class="pendiente">PENDIENTE</p></p>
-
-		<%
-			
-							}
-							if(a.getProcesado() ==  1){
-							%>
-		<p>Estado: <p class="acertada">ACERTADA</p></p>
-
-		<%
-			
-							}
-							if(a.getProcesado() ==  2){
-							%>
-		<p>Estado: <p class="fallada">FALLADA</p></p>
-
-		<%
-			
-							}
-							%>
-		<div class="masdetalle" data-id="<%=a.getIdApuesta()%>">
-			<p>Detalles</p>
-			<div class="fillo"></div>
-		</div>
-
-	</div>
-
-	<%	
-				}
-
-			}
-%>
-</div>
-<%
-	}
-%>
 <%@include file="/html/common/footer.jsp"%>

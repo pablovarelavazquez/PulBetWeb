@@ -6,8 +6,6 @@
 	<%
 		Usuario u = (Usuario) SessionManager.get(request, SessionAttributeNames.USER);
 		Cookie cookie = CookieManager.getCookie(request, WebConstants.REMEMBERME);
-		
-
 	%>
 	
 	<c:choose>
@@ -26,17 +24,17 @@
 					String email = cookie.getValue();
 					%>
 					<input class="logininput" type="email" id="loginemail"
-						name="<%=ParameterNames.LOGIN_EMAIL%>" placeholder="Email"
+						name="<%=ParameterNames.LOGIN_EMAIL%>" placeholder="<fmt:message key="emailPlaceholder" bundle="${messages}" />"
 						value="<%=email%>" />
 					
-					<input class="logininput"  type="password" placeholder="Contraseña"
+					<input class="logininput"  type="password" placeholder="<fmt:message key="passPlaceholder" bundle="${messages}" />"
 						name="<%=ParameterNames.PASSWORD%>" />
 					
-					<button id="loginbutton" type="submit">IR</button>
+					<button id="loginbutton" type="submit"><fmt:message key="go" bundle="${messages}" /></button>
 					
 					<div id="remember">
 					<input id="rememberinput" type="checkbox" checked="checked">
-					<label>Recordar usuario</label>
+					<label><fmt:message key="remember" bundle="${messages}" /></label>
 					</div>
 					<% 
 					} else {
@@ -48,11 +46,11 @@
 						<input class="logininput"  type="password" placeholder="Contraseña"
 						name="<%=ParameterNames.PASSWORD%>" />
 					
-					<button id="loginbutton" type="submit">IR</button>
+					<button id="loginbutton" type="submit"><fmt:message key="go" bundle="${messages}" /></button>
 					
 					<div id="remember">
 					<input id="rememberinput" type="checkbox">
-					<label>Recordar usuario</label>
+					<label><fmt:message key="remember" bundle="${messages}" /></label>
 					</div>
 					<% 
 					}
@@ -65,7 +63,7 @@
 
 			<div id="user-register">
 				<a href="<%=ControllerPaths.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRE_REGISTRO%>">
-					Registro
+					<fmt:message key="registro" bundle="${messages}" />
 				</a>
 			</div>
 		</c:when>
@@ -74,9 +72,9 @@
 			<!-- usuario autenticado -->
 			<div id="usuario">
 				<div id="salir">
-					<p>Hola ${sessionScope['user'].getNome()}</p>
+					<p><fmt:message key="hello" bundle="${messages}"/> ${sessionScope['user'].getNome()}</p>
 					<a href="<%=request.getContextPath()%>/usuario?action=logout">
-						Salir </a>
+						<fmt:message key="exit" bundle="${messages}" /> </a>
 				</div>
 				<div id="ingresar">
 					
@@ -92,7 +90,7 @@
 						<p>0.0 euros</p>
 						<a
 							href="<%=request.getContextPath() + "/"%><%=ViewPaths.INGRESAR%>"
-							> Ingresar </a>
+							> <fmt:message key="ingresar" bundle="${messages}" /> </a>
 
 					</c:if>
 				</div>
@@ -105,19 +103,17 @@
 
 				<div id="meumenudes" class="menudes-contido">
 					<a
-						href="<%=ControllerPaths.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRE_EDIT%>">Mi
-						perfil</a> 
+						href="<%=ControllerPaths.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRE_EDIT%>"><fmt:message key="myProfile" bundle="${messages}" /></a> 
 					<a
-						href="<%=request.getContextPath()%><%=ViewPaths.INGRESAR%>">Ingresar</a>
-					<a href="<%=request.getContextPath()%><%=ViewPaths.RETIRAR%>">Retirar</a>
-					<a href="<%=request.getContextPath()%><%=ViewPaths.HISTORY%>">Historial</a>
+						href="<%=request.getContextPath()%><%=ViewPaths.INGRESAR%>"><fmt:message key="ingresar" bundle="${messages}" /></a>
+					<a href="<%=request.getContextPath()%><%=ViewPaths.RETIRAR%>"><fmt:message key="retirar" bundle="${messages}" /></a>
+					<a href="<%=request.getContextPath()%><%=ViewPaths.HISTORY%>"><fmt:message key="history" bundle="${messages}" /></a>
 					<a
 						href="<%=(ControllerPaths.USUARIO + "?")%>
 							<%=ParameterNames.ACTION%>=
-							<%=Actions.OPENBETS%>">Apuestas
-						abiertas</a>
+							<%=Actions.OPENBETS%>"><fmt:message key="openBets" bundle="${messages}" /></a>
 					<a href="<%=(ControllerPaths.USUARIO + "?")%><%=ParameterNames.ACTION%>=
-							<%=Actions.CLOSE_ACCOUNT%>">Cerrar cuenta</a>
+							<%=Actions.CLOSE_ACCOUNT%>"><fmt:message key="closeAccount" bundle="${messages}" /></a>
 
 				</div>
 			</div>

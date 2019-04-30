@@ -251,6 +251,7 @@ public class UsuarioServlet extends HttpServlet {
 			String apelido1 = request.getParameter(ParameterNames.APELIDO1);
 			String apelido2 = request.getParameter(ParameterNames.APELIDO2);
 			String password = request.getParameter(ParameterNames.PASSWORD);
+			String repeatPassword = request.getParameter(ParameterNames.REPEAT_PASSWORD);
 			String fnac = request.getParameter(ParameterNames.FECHA_NACIMIENTO);
 			String telefono = request.getParameter(ParameterNames.TELEFONO);
 			String nomeUsuario = request.getParameter(ParameterNames.NOME_USUARIO);
@@ -272,7 +273,17 @@ public class UsuarioServlet extends HttpServlet {
 			u.setEmail(ValidationUtils.emailValidator(email,errors,ParameterNames.REG_EMAIL, true));
 			u.setApelido1(ValidationUtils.namesOnlyLettersValidator(apelido1,errors,ParameterNames.APELIDO1, true));
 			u.setApelido2(ValidationUtils.namesOnlyLettersValidator(apelido2,errors,ParameterNames.APELIDO2, true));
-			u.setPassword(ValidationUtils.passwordValidator(password,errors,ParameterNames.PASSWORD, true));
+			password = ValidationUtils.passwordValidator(password,errors,ParameterNames.PASSWORD, true);
+			repeatPassword = ValidationUtils.passwordValidator(repeatPassword,errors,ParameterNames.REPEAT_PASSWORD, true);
+			
+			if(!errors.hasErrors()) {
+			if(password.equals(repeatPassword)) {
+				u.setPassword(password);
+			} else {
+				errors.addError(ParameterNames.PASSWORD, ErrorCodes.NOT_EQUALS);
+			}
+			}
+			
 			u.setTelefono(ValidationUtils.stringValidator(telefono,errors,ParameterNames.TELEFONO, true));
 			u.setNomeUsuario(ValidationUtils.namesWithNumbersValidator(nomeUsuario,errors,ParameterNames.NOME_USUARIO, true));
 			u.setDNI(ValidationUtils.nifValidator(dni,errors,ParameterNames.DNI, true));
@@ -298,8 +309,9 @@ public class UsuarioServlet extends HttpServlet {
 
 
 			if(!errors.hasErrors()) {
-
+				
 				try {
+					
 					u = usuarioService.create(u);
 
 				} catch (DuplicateInstanceException e) {
@@ -431,8 +443,7 @@ public class UsuarioServlet extends HttpServlet {
 				// Resultados de la busqueda (siempre preparar comodos para renderizar)
 				request.setAttribute(AttributeNames.RESULTADOS, results.getPage());
 				request.setAttribute(AttributeNames.TOTAL, results.getTotal());
-				
-				//ao cambiar a jstl empregar os de arriba e eliminar este
+				//Para comprobar se 
 				request.setAttribute(AttributeNames.APUESTAS, results);
 
 				// Datos para paginacion															
@@ -476,7 +487,7 @@ public class UsuarioServlet extends HttpServlet {
 				logger.warn(e.getMessage(),e);
 			}
 
-			request.setAttribute(AttributeNames.APUESTAS, apuestas);
+			request.setAttribute(AttributeNames.APUESTAS, apuestas.getPage());
 			target = ViewPaths.OPENBETS;
 
 		}else if (Actions.PRE_EDIT.equalsIgnoreCase(action)){

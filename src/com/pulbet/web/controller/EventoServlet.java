@@ -176,7 +176,8 @@ public class EventoServlet extends HttpServlet {
 			
 			if (errors.hasErrors()) {	
 				errors.addError(ParameterNames.ACTION,ErrorCodes.FIND_ERROR);				
-				request.setAttribute(AttributeNames.ERRORS, errors);				
+				request.setAttribute(AttributeNames.ERRORS, errors);	
+				target=ViewPaths.HOME;
 			}
 
 		} catch (DataException ex) {

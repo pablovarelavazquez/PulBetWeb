@@ -12,13 +12,14 @@ body, html {
 	background: #14805e;
 	width: 100%;
 	color: white;
+	border-bottom: 1px solid white;
 }
 
 #logo {
-	position: absolute;
-	left: 10px;
-	top: 0px;
-	display: inline-block;
+    width: 150px;
+    position: absolute;
+    top: 16%;
+    left: 2%;
 }
 
 #logo a img {
@@ -45,9 +46,8 @@ body, html {
 	float: right;
 	top: 0px;
 	right: 20px;
-	position: relative;
 	text-align: right;
-	display: inline-block;
+	position: absolute;
 }
 
 #user-register {
@@ -133,7 +133,7 @@ body, html {
 
 #divbanco {
 	width: 200px;
-	min-height: 80%;
+	min-height: 70%;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 20px;
@@ -171,24 +171,23 @@ body, html {
 
 #register-form {
 	display: block;
-	min-height: 80%;
+	min-height: 70%;
 }
 
-#search-form{
-	height: 5%;
-    background: azure;
+#search-form {
+	padding-top: 1%;
+	min-height: 3%;
+	background: #14805e;
+	text-align: center;
+	padding-bottom: 1%;
+}
+
+#search-form label {
+	font-size: 0.70em;
 }
 
 #login-form {
-	min-height: 80%;
-}
-
-#left {
-	display: inline-block;
-	width: 15%;
-	float: left;
-	min-height: 80%;
-	background: #2d2d2d;
+	min-height: 70%;
 }
 
 #participanteseacrh input {
@@ -207,18 +206,16 @@ body, html {
 	color: white;
 }
 
-#divright {
-	display: inline-block;
-	width: 15%;
-	float: right;
-	min-height: 80%;
-	background: #2d2d2d;
-}
-
 #carrito {
+	position: absolute;
 	font-size: 10px;
-	margin: 5px;
+	margin-right: 2%;
+	margin-top: 1%;
 	background: white;
+	width: 20%;
+    top: 20%;
+    right: 0%;
+
 }
 
 .lineacarrito {
@@ -253,11 +250,13 @@ body, html {
 }
 
 #home {
+	left: 5%;
 	background: #888;
 	display: block;
-	width: 70%;
-	min-height: 80%;
+	width: 65%;
+	min-height: 70%;
 	float: left;
+	position: relative;
 }
 
 .results {
@@ -280,9 +279,13 @@ body, html {
 }
 
 #detalle {
+	left: 5%;
+	background: #545454;
+	display: block;
+	width: 65%;
+	min-height: 70%;
+	float: left;
 	position: relative;
-	width: 70%;
-	display: inline-block;
 }
 
 .titulodetalle {
@@ -306,7 +309,6 @@ li, ul {
 	background: darkgray;
 	clear: both;
 	position: relative;
-	min-height: 15%;
 	margin-top: 0px;
 }
 
@@ -335,7 +337,7 @@ li, ul {
 }
 
 #history {
-	min-height: 85%;
+	min-height: 70%;
 	width: 80%;
 	margin-left: auto;
 	margin-right: auto;
@@ -370,10 +372,10 @@ li, ul {
 }
 
 .lineadetalle {
-	    border: 1px solid grey;
-    position: relative;
-    margin-bottom: 2px;
-    height: 100px;
+	border: 1px solid grey;
+	position: relative;
+	margin-bottom: 2px;
+	height: 100px;
 }
 
 .lineadetalle p {
@@ -395,14 +397,14 @@ li, ul {
 	left: 2%;
 }
 
-.dettipres{
-	top:70%;
+.dettipres {
+	top: 70%;
 	left: 2%;
 }
 
-.detest{
+.detest {
 	top: 70%;
-    right: 2%;
+	right: 2%;
 }
 
 .acertada {
@@ -461,3 +463,15 @@ li, ul {
 .show {
 	display: block;
 }
+
+.w3-container:after,.w3-container:before,.w3-panel:after,.w3-panel:before,.w3-row:after,.w3-row:before,.w3-row-padding:after,.w3-row-padding:before,
+.w3-cell-row:before,.w3-cell-row:after,.w3-clear:after,.w3-clear:before,.w3-bar:before,.w3-bar:after{content:"";display:table;clear:both}
+
+.w3-container,.w3-panel{padding:0.01em 16px}.w3-panel{margin-top:16px;margin-bottom:16px}
+
+.w3-input{padding:8px;display:block;border:none;border-bottom:1px solid #ccc;width:100%}
+
+.w3-green,.w3-hover-green:hover{color:#fff!important;background-color:#4CAF50!important}
+
+.w3-card-4,.w3-hover-shadow:hover{box-shadow:0 4px 10px 0 rgba(0,0,0,0.2),0 4px 20px 0 rgba(0,0,0,0.19)}
+

@@ -9,15 +9,18 @@
 		if (apuestas != null) {
 			if (apuestas.isEmpty()) {
 	%>
-	<p>No se han encontrado resultados para esos criterios de busqueda.
-		Pruebe a modificarlos</p>
+	<p>
+		<fmt:message key="notFound" bundle="${messages}" />
+	</p>
 	<%
 		}
 		}
 
 		if (apuestas == null) {
 	%>
-	<p>Introduzca los criterios para la busqueda de resultados</p>
+	<p>
+		<fmt:message key="notCrit" bundle="${messages}" />
+	</p>
 	<%
 		}
 	%>
@@ -28,27 +31,45 @@
 
 			<div class="apuestahistorial">
 				<p class="fechaapuesta">${DateUtils.WITH_HOUR_FORMAT.format(a.getFecha())}</p>
-				<p class="idapuesta">Id Apuesta: ${a.getIdApuesta()}</p>
+				<p class="idapuesta">
+					<fmt:message key="betId" bundle="${messages}" /> ${a.getIdApuesta()}
+				</p>
 				<c:if test="${a.getLineas().size() > 1}">
-					<p>Combinada: ${a.getLineas().size()} eventos</p>
+					<p>
+						<fmt:message key="combin" bundle="${messages}">
+							<fmt:param value="${a.getLineas().size()}" />
+						</fmt:message>
+					</p>
 				</c:if>
 				<c:if test="${a.getLineas().size() <= 1}">
-					<p>Simple</p>
+					<p>
+						<fmt:message key="simple" bundle="${messages}" />
+					</p>
 				</c:if>
-				<p>Cuotas: ${a.getGanancias() / a.getImporte()}</p>
-				<p>Importe: ${a.getImporte()}</p>
+				<p>
+					<fmt:message key="cuotas" bundle="${messages}" /> ${a.getGanancias() / a.getImporte()}
+				</p>
+				<p>
+					<fmt:message key="import" bundle="${messages}" /> ${a.getImporte()}
+				</p>
 				<c:if test="${a.getProcesado() == 1}">
 					<div class="acertada">
-						<p>Ganancias: ${a.getGanancias()}</p>
+						<p>
+							<fmt:message key="earns" bundle="${messages}"/> ${a.getGanancias()}
+						</p>
 					</div>
 				</c:if>
 				<c:if test="${a.getProcesado() != 1}">
 					<div class="fallada">
-						<p>Ganancias: 0.00</p>
+						<p>
+							<fmt:message key="earns" bundle="${messages}"/> 0.00
+						</p>
 					</div>
 				</c:if>
 				<div class="masdetalle" data-id="${a.getIdApuesta()}">
-					<p>Detalles</p>
+					<p>
+						<fmt:message key="details" bundle="${messages}" />
+					</p>
 					<div class="fillo"></div>
 				</div>
 			</div>
@@ -101,7 +122,7 @@
 				</a>
 			</c:if>
 		</center>
-	</p>
+		</p>
 	</c:if>
 
 </div>
