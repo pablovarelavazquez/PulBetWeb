@@ -128,6 +128,7 @@ public class UsuarioServlet extends HttpServlet {
 			if (u == null) {
 				errors.addError(ParameterNames.ACTION,ErrorCodes.AUTHENTICATION_ERROR);	
 				errors.addError(ParameterNames.PASSWORD, ErrorCodes.NOT_CORRECT);
+				
 			}
 
 			if (errors.hasErrors()) {	
