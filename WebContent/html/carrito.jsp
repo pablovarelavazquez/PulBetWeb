@@ -13,7 +13,7 @@
 
 		<p>${l.getEvento().getLocal().getNome()} - ${l.getEvento().getVisitante().getNome()}</p>
 		<p>${l.getResultado().getNombre()}</p>
-		<p class="cuota">${l.getResultado().getCuota()}</p>
+		<p class="cuotacarrito">${l.getResultado().getCuota()}</p>
 
 
 		<a class="dellinea" data-evento="${l.getEvento().getIdEvento()}"
@@ -24,25 +24,34 @@
 		<hr>
 	</div>
 		</c:forEach>
+		
+		<div class="contenedor-carrito">
 		<form action="<%=ControllerPaths.APUESTA%>">
 		<input type="hidden" name="${ParameterNames.ACTION}"
 			value="<%=Actions.APOSTAR%>"> 
 			
-		<label><label><fmt:message key="acumulada" bundle="${messages}" /> </label></label>
-		<input type="text" value="${acumulada}" id="acumulada" disabled>
+		<div class="cont">
+		<label><fmt:message key="acumulada" bundle="${messages}" /></label>
+		<input class="my-little-input" type="text" value="${acumulada}" id="acumulada" disabled>
+		</div>
 		<br> 
 		
+		<div class="cont">
 		<label><label><fmt:message key="importe" bundle="${messages}" /> </label></label> 
-		<input id="importe"
+		<input class="my-little-input" id="importe"
 			name="<%=ParameterNames.IMPORTE%>" type="text" value="1.0" required>
+		</div>
 		<br> 
 		
-		<label><label><fmt:message key="ganancias" bundle="${messages}" /> </label></label> 
-		<input type="text"
+		<div class="cont">
+		<label><fmt:message key="ganancias" bundle="${messages}" /></label> 
+		<input class="my-little-input" type="text"
 			name="<%=ParameterNames.GANANCIAS%>" id="ganancias" disabled>
+		</div>	
 		<br>
-		<button type="submit"><label><fmt:message key="apostar" bundle="${messages}" /> </label></button>
+		<input class="carrito-bttn" type="submit" value="<fmt:message key="apostar" bundle="${messages}" />">
 	</form>
+	</div>
 	</c:if>
 
 

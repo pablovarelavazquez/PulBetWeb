@@ -31,12 +31,15 @@ import com.pulbet.web.util.WebUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Competicion;
+import com.pvv.pulbet.model.Deporte;
 import com.pvv.pulbet.model.Evento;
 import com.pvv.pulbet.service.CompeticionService;
+import com.pvv.pulbet.service.DeporteService;
 import com.pvv.pulbet.service.EventoCriteria;
 import com.pvv.pulbet.service.EventoService;
 import com.pvv.pulbet.service.Results;
 import com.pvv.pulbet.service.impl.CompeticionServiceImpl;
+import com.pvv.pulbet.service.impl.DeporteServiceImpl;
 import com.pvv.pulbet.service.impl.EventoServiceImpl;
 
 
@@ -53,6 +56,7 @@ public class EventoServlet extends HttpServlet {
 
 	private EventoService eventoService = null;
 	private CompeticionService competicionService = null;
+	private DeporteService deporteService = null;
 	private static Logger logger = LogManager.getLogger(EventoServlet.class);
 	
 
@@ -60,6 +64,7 @@ public class EventoServlet extends HttpServlet {
 	public EventoServlet() {
 		eventoService = new EventoServiceImpl();
 		competicionService = new CompeticionServiceImpl();
+		deporteService = new DeporteServiceImpl();
 	}
 
 
@@ -189,10 +194,16 @@ public class EventoServlet extends HttpServlet {
 			String idParamValue = request.getParameter(ParameterNames.ID);
 			Long id = Long.valueOf(idParamValue);
 			Evento evento;
+			Competicion competicion;
+			Deporte deporte;
 			
 			try {
 				evento = eventoService.findById(id,idioma);
+				competicion = competicionService.findById(evento.getIdCompeticion());
+				deporte = deporteService.findById(evento.getIdDeporte(), idioma);
 				request.setAttribute(AttributeNames.EVENTO, evento);
+				request.setAttribute(AttributeNames.COMPETICION, competicion);
+				request.setAttribute(AttributeNames.DEPORTE, deporte);
 			} catch (InstanceNotFoundException e) {
 				logger.warn(e.getMessage(),e);
 			} catch (DataException e) {

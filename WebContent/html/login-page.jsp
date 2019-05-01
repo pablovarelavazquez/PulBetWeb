@@ -3,32 +3,45 @@
 
 <%@include file="/html/common/header.jsp"%>
 <div id="login-form">
-	<h3><fmt:message key="welcome" bundle="${messages}" /></h3>
+
+	<div class="contenedor-header">
+	<h3>
+		<fmt:message key="welcome" bundle="${messages}" />
+	</h3>
+	</div>
+	
+	
+	<div class="contenedor-grey">
+	
+	<div class="green">
+				<h2>
+					Login
+				</h2>
+	</div>
+	
 	<form action="<%=ControllerPaths.USUARIO%>" method="post">
 
 		<c:set var="parameterErrors" scope="page"
 			value="${errors.showErrors(ParameterNames.ACTION)}" />
 		<c:forEach var="e" items="${parameterErrors}">
-			<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			<li class="fallada"><fmt:message key="${e}" bundle="${messages}" /></li>
 		</c:forEach>
 
 		<input type="hidden" name="<%=ParameterNames.ACTION%>"
 			value="<%=Actions.LOGIN%>" />
 			
-		<legend>
-				<fmt:message key="email" bundle="${messages}" />
-		</legend>
+		<label><fmt:message key="email" bundle="${messages}" /></label>
 
 		<% 
 					if(cookie!=null){
 					String email = cookie.getValue();
 					%>
-		<input type="email" name="<%=ParameterNames.LOGIN_EMAIL%>"
+		<input class="my-input" type="email" name="<%=ParameterNames.LOGIN_EMAIL%>"
 		value="<%=email%>" />
 		<% 
 					} else {
 					%>
-		<input type="email" name="<%=ParameterNames.LOGIN_EMAIL%>"
+		<input class="my-input" type="email" name="<%=ParameterNames.LOGIN_EMAIL%>"
 			value="<%=ParamsUtils.getParameter(request, ParameterNames.LOGIN_EMAIL)%>" />
 		<% 
 					}
@@ -37,25 +50,28 @@
 		<c:set var="parameterErrors" scope="page"
 			value="${errors.showErrors(ParameterNames.LOGIN_EMAIL)}" />
 		<c:forEach var="e" items="${parameterErrors}">
-			<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			<li class="fallada"><fmt:message key="${e}" bundle="${messages}" /></li>
 		</c:forEach>
 		
-		<legend>
+		<label>
 				<fmt:message key="password" bundle="${messages}" />
-		</legend>
+		</label>
 
-		<input type="password" name="<%=ParameterNames.PASSWORD%>" />
+		<input class="my-input" type="password" name="<%=ParameterNames.PASSWORD%>" />
 
 		<c:set var="parameterErrors" scope="page"
 			value="${errors.showErrors(ParameterNames.PASSWORD)}" />
 		<c:forEach var="e" items="${parameterErrors}">
-			<li><fmt:message key="${e}" bundle="${messages}" /></li>
+			<li class="fallada"><fmt:message key="${e}" bundle="${messages}" /></li>
 		</c:forEach>
+		
+		<br>
 
-		<input type="submit" value="<fmt:message key="enter" bundle="${messages}"/>" />
+		<input class="my-input" type="submit" value="<fmt:message key="enter" bundle="${messages}"/>" />
 	</form>
+	</div>
 
-	<a href="" id="recuperar"><fmt:message key="recpassword" bundle="${messages}" /></a>
+	
 </div>
 
 <%@include file="/html/common/footer.jsp"%>

@@ -3,15 +3,19 @@
 
 <c:if test="${resultados != null}">
 	<c:if test="${empty resultados}">
-		<p>No hemos encontrado resultados para esa busqueda</p>
+	<div class="contenedor-header">
+	<p class="pendiente">
+		<fmt:message key="noresults" bundle="${messages}" />
+	</p>
+	</div>
 	</c:if>
 </c:if>
 
 <div class="results">
 	<c:if test="${not empty resultados}">
 
-		<p>
-			<fmt:message key="resultados" bundle="${messages}" />
+		<p class="tituloresult">
+			<fmt:message key="resultados" bundle="${messages}" />:
 		</p>
 
 
@@ -32,17 +36,16 @@
 			<a class="titulodetalle" class="mercado" href="${urlDetalle}">${r.getLocal().getNome()}
 				vs ${r.getVisitante().getNome()} - ${date}</a>
 			<div class="mercado">
-				<p class="titulodetalle">${mercado.getNome()}</p>
+				<p class="titulomercado">${mercado.getNome()}</p>
+				<div class="resultados">
 				<c:forEach var="resultado" items="${resultados}">
 
 
-					<div class="resultado">
-						<p>${resultado.getNombre()}</p>
-
-						<a class="cuota" data-evento="${resultado.idEvento}"
-							data-resultado="${resultado.idResultado}">${resultado.getCuota()}</a>
+					<div class="cuota" data-evento="${resultado.idEvento}" data-resultado="${resultado.idResultado}">
+						<p>${resultado.getNombre()} ${resultado.getCuota()}</p>
 					</div>
 				</c:forEach>
+				</div>
 			</div>
 
 		</c:forEach>

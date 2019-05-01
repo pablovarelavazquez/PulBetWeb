@@ -5,10 +5,12 @@ public interface AttributeNames {
 	public static final String ERRORS = "errors";
 	public static final String RESULTADOS = "resultados";
 	public static final String DEPORTES = "deportes";
+	public static final String DEPORTE = "deporte";
 	public static final String EVENTO = "evento";
 	public static final String EVENTOS = "eventos";
 	public static final String APUESTAS = "apuestas";
 	public static final String COMPETICIONES = "competiciones";
+	public static final String COMPETICION = "competicion";
 	
 	public static final String TOTAL = "total";
 	

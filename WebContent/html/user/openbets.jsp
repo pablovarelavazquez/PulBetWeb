@@ -4,6 +4,14 @@
 <%@include file="/html/common/header.jsp"%>
 
 <div id="history">
+
+	<div class="contenedor-grey">
+	<div class="green">
+				<h2>
+					<fmt:message key="openBets" bundle="${messages}" />
+				</h2>
+	</div>
+
 	<c:if test="${empty apuestas}">
 		<p><fmt:message key="notOpenBets" bundle="${messages}" /></p>
 	</c:if>
@@ -11,7 +19,7 @@
 		<c:forEach var="a" items="${apuestas}">
 
 			<div class="apuestahistorial">
-				<p class="fechaapuesta">${DateUtils.WITH_HOUR_FORMAT.format(a.getFecha())}</p>
+				<p class="fechaapuesta">${DateUtils.WITH_SECOND_FORMAT.format(a.getFecha())}</p>
 				<p class="idapuesta">
 					<fmt:message key="betId" bundle="${messages}" />
 					${a.getIdApuesta()}
@@ -44,6 +52,6 @@
 			</div>
 		</c:forEach>
 	</c:if>
-
+	</div>
 </div>
 <%@include file="/html/common/footer.jsp"%>

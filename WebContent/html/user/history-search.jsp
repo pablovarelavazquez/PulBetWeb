@@ -8,17 +8,16 @@
 <form action="<%=ControllerPaths.USUARIO%>" method="post">
 	<input type="hidden" name="<%=ParameterNames.ACTION%>"
 			value="<%=Actions.HISTORY%>"> 
-	<input class="historycheck" type="radio" name="fecha" value="1"><fmt:message key="ult24" bundle="${messages}" />
-	<input class="historycheck" type="radio" name="fecha" value="2"><fmt:message key="ult48" bundle="${messages}" />
-	
+	<input class="historycheck" type="radio" name="fecha" value="1"><label><fmt:message key="ult24" bundle="${messages}" /></label>
+	<input class="historycheck" type="radio" name="fecha" value="2"><label><fmt:message key="ult48" bundle="${messages}" /></label>
 	
 	<input class="historycheck" type="radio" name="fecha" value="3" checked>
 	<div id="findfecha">
-	<label><fmt:message key="desde" bundle="${messages}" /> </label><input type="date" name="fechadesde">
-	<label><fmt:message key="hasta" bundle="${messages}" /> </label><input type="date" name="fechahasta">
+	<label><fmt:message key="desde" bundle="${messages}" /> </label><input class="my-little-input" type="date" name="fechadesde">
+	<label><fmt:message key="hasta" bundle="${messages}" /> </label><input class="my-little-input" type="date" name="fechahasta">
 	</div>
 	
-	<button type="submit"><fmt:message key="find" bundle="${messages}" /></button>
+	<input  class="my-button" type="submit" value="<fmt:message key="find" bundle="${messages}" />">
 </form>
 </div>
 

@@ -119,6 +119,8 @@ $(document).ready(function () {
 	
 	$(".cuota").mouseover().css("cursor","pointer");
 	$(".dellinea").mouseover().css("cursor","pointer");
+	$(".masdetalle").mouseover().css("cursor","pointer");
+	
 	
 	$(".dellinea").click(function(){
 		

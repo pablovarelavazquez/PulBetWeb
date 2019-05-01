@@ -3,7 +3,7 @@ body, html {
 	width: 100%;
 	height: 100%;
 	margin: 0px;
-	background: #888;
+	background: #dadacf;
 }
 
 #header {
@@ -16,10 +16,10 @@ body, html {
 }
 
 #logo {
-    width: 150px;
-    position: absolute;
-    top: 16%;
-    left: 2%;
+	width: 150px;
+	position: absolute;
+	top: 16%;
+	left: 2%;
 }
 
 #logo a img {
@@ -82,7 +82,7 @@ body, html {
 	display: block;
 }
 
-#user-register a : hover {
+#user-register a :hover {
 	text-decoration: underline;
 	color: #ffdf1b;
 }
@@ -92,7 +92,7 @@ body, html {
 	color: #ffdf1b;
 }
 
-#usuario a : hover {
+#usuario a :hover {
 	text-decoration: underline;
 	color: #ffdf1b;
 }
@@ -132,7 +132,7 @@ body, html {
 }
 
 #divbanco {
-	width: 200px;
+	width: 50%;
 	min-height: 70%;
 	margin-left: auto;
 	margin-right: auto;
@@ -171,7 +171,8 @@ body, html {
 
 #register-form {
 	display: block;
-	min-height: 70%;
+	min-height: 75%;
+	margin-bottom: 2%;
 }
 
 #search-form {
@@ -180,30 +181,22 @@ body, html {
 	background: #14805e;
 	text-align: center;
 	padding-bottom: 1%;
+	color: white;
 }
 
-#search-form label {
+#search-form label, #findhistorial label {
 	font-size: 0.70em;
 }
 
 #login-form {
-	min-height: 70%;
+	min-height: 75%;
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #participanteseacrh input {
 	width: 120px;
-}
-
-#sports a {
-	font-size: 12px;
-	text-decoration: none;
-	color: white;
-}
-
-#sports a : hover {
-	font-size: 12px;
-	text-decoration: none;
-	color: white;
 }
 
 #carrito {
@@ -211,11 +204,12 @@ body, html {
 	font-size: 10px;
 	margin-right: 2%;
 	margin-top: 1%;
-	background: white;
+	background: #545454;
 	width: 20%;
-    top: 20%;
-    right: 0%;
-
+	top: 20%;
+	right: 0%;
+	color: white;
+	border-radius:5px;
 }
 
 .lineacarrito {
@@ -237,12 +231,44 @@ body, html {
 }
 
 .cuota {
+	margin: 2px 0px 2px;
 	right: 10px;
-	position: absolute;
+	background: #888;
+	border-radius: 5px;
+	position: inherit;
+	text-align: center;
+	display: inline-block;
+	width: 30%;
+	height: 30px;
+	padding-top: 5px;
+}
+
+.cuota p {
+	display: inline;
+}
+
+.cuota:hover {
+	background: #8a9e82;
+	color: black;
+}
+
+.cont {
+	width: 140px;
+}
+
+.carrito-bttn {
+	width: 60% !important;
+	padding: 1px;
+	display: inline-block;
+	border: none;
+	border: 1px solid #14805e;
+	border-radius: 5px;
+	width: 12%;
+	display: inline-block;
 }
 
 #carrito input {
-	width: 50px;
+	width: 25%;
 }
 
 #importe {
@@ -251,21 +277,37 @@ body, html {
 
 #home {
 	left: 5%;
-	background: #888;
+	/* background: #888; */
 	display: block;
 	width: 65%;
-	min-height: 70%;
+	min-height: 75%;
 	float: left;
 	position: relative;
+	margin-bottom: 2%;
+}
+
+#contenido {
+	min-height: 75%
 }
 
 .results {
 	background: #545454;
+	border-radius: 5px;
 }
 
 .results a {
 	text-decoration: none;
 	color: white;
+}
+
+.results a:hover {
+	text-decoration: none;
+	color: #ffdf1b;
+}
+
+.tituloresult {
+	padding: 10px 20px 0px;
+	color: #ffdf1b;
 }
 
 .mercado {
@@ -274,21 +316,26 @@ body, html {
 	display: block;
 }
 
-.cuota {
-	position: inherit;
-}
-
 #detalle {
 	left: 5%;
 	background: #545454;
 	display: block;
 	width: 65%;
-	min-height: 70%;
+	min-height: 75%;
 	float: left;
 	position: relative;
 }
 
+.detalleeven {
+	border-radius: 4px;
+	background: #888;
+	margin: 2%;
+	padding: 2%;
+	color: white;
+}
+
 .titulodetalle {
+	padding-top: 5px;
 	position: relative;
 	width: 100%;
 	background: #14805e;
@@ -300,47 +347,79 @@ body, html {
 	margin-top: 2px;
 }
 
+.titulomercado {
+	width: 100%;
+	padding-top: 5px;
+	position: relative;
+	width: 100%;
+	background: #888;
+	color: white;
+	height: 30px;
+	display: block;
+	top: 0px;
+	margin: 2px 0px 2px;
+	border-radius: 5px;
+}
+
 li, ul {
 	list-style: none;
 }
 
 #footer {
 	width: 100%;
-	background: darkgray;
+	background: #888;
 	clear: both;
 	position: relative;
 	margin-top: 0px;
+	min-height: 20%;
+	text-align: center;
 }
 
-.resultado {
-	display: inline-block;
-	width: 30%;
-	height: 30px;
+.dfoot {
+	font-size: 0.75em;
+	color: white;
+	padding-top: 1%;
 }
 
-.resultado p {
-	display: inline;
+#footer hr {
+	width: 70%;
+}
+
+#footer a {
+	color: white;
+	text-decoration: none;
+}
+
+.img {
+	margin: 1%;
 }
 
 #findhistorial {
+	padding-top: 1%;
+	min-height: 3%;
+	background: #14805e;
 	text-align: center;
-	width: 80%;
-	margin-top: 10px;
-	margin-left: auto;
-	margin-right: auto;
+	padding-bottom: 1%;
 	color: white;
 }
 
 #findfecha {
-	margin-left: 10px;
+	margin-left: -5px;
 	display: inline;
 }
 
+.resultados {
+	display: flex;
+	justify-content: space-around;
+}
+
 #history {
-	min-height: 70%;
+	min-height: 75%;
 	width: 80%;
 	margin-left: auto;
 	margin-right: auto;
+	margin-bottom: 2%;
+	margin-top: 2%;
 }
 
 .apuestahistorial {
@@ -348,6 +427,7 @@ li, ul {
 	background: white;
 	padding: 5px 20px 5px;
 	position: relative;
+	border-radius: 5px;
 }
 
 .apuestahistorial p {
@@ -376,6 +456,8 @@ li, ul {
 	position: relative;
 	margin-bottom: 2px;
 	height: 100px;
+	border-radius: 5px;
+	background: #dadacf;
 }
 
 .lineadetalle p {
@@ -412,7 +494,7 @@ li, ul {
 }
 
 .fallada {
-	color: red;
+	color: #b70100;
 }
 
 .pendiente {
@@ -464,14 +546,104 @@ li, ul {
 	display: block;
 }
 
-.w3-container:after,.w3-container:before,.w3-panel:after,.w3-panel:before,.w3-row:after,.w3-row:before,.w3-row-padding:after,.w3-row-padding:before,
-.w3-cell-row:before,.w3-cell-row:after,.w3-clear:after,.w3-clear:before,.w3-bar:before,.w3-bar:after{content:"";display:table;clear:both}
+.contenedor {
+	content: "";
+	display: table;
+	clear: both;
+	padding: 0.01em 16px;
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;
+	border-radius: 5px;
+}
 
-.w3-container,.w3-panel{padding:0.01em 16px}.w3-panel{margin-top:16px;margin-bottom:16px}
+.contenedor-carrito{
+	text-align: center;
+    content: "";
+    display: table;
+    clear: both;
+    padding: 0.01em 16px;
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 5px;
+}
 
-.w3-input{padding:8px;display:block;border:none;border-bottom:1px solid #ccc;width:100%}
+.contenedor-header {
+	content: "";
+	display: table;
+	clear: both;
+	padding: 0.01em 16px;
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;
+	border-radius: 5px;
+	text-align: center;
+	font-size: 1.2em;
+}
 
-.w3-green,.w3-hover-green:hover{color:#fff!important;background-color:#4CAF50!important}
+.contenedor-grey {
+	content: "";
+	display: table;
+	clear: both;
+	padding: 2em 6em;
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;
+	background: #888;
+	border-radius: 5px;
+}
 
-.w3-card-4,.w3-hover-shadow:hover{box-shadow:0 4px 10px 0 rgba(0,0,0,0.2),0 4px 20px 0 rgba(0,0,0,0.19)}
+.contenedor label {
+	margin: 2%;
+}
 
+.my-input {
+	padding: 8px;
+	display: block;
+	border: none;
+	border: 1px solid #14805e;
+	border-radius: 5px;
+	width: 97%;
+}
+
+.my-little-input {
+	padding: 1px;
+	display: inline-block;
+	border: none;
+	border: 1px solid #14805e;
+	border-radius: 5px;
+	width: 12%;
+	display: inline-block;
+}
+
+.green {
+	padding: 0.01em 16px;
+	color: #ffdf1b !important;
+	background-color: #14805e !important;
+	border-radius: 5px;
+}
+
+.my-button {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-weight: 800;
+	text-align: center;
+	min-width: 25px;
+	padding: 0 2px;
+	margin-left: 5px;
+	margin-top: 1px;
+	height: 23px;
+	background-color: #ddd;
+	color: #14805e;
+	font-size: 12px;
+	border-radius: 1px;
+	cursor: pointer;
+	outline: 1px solid transparent;
+	border: none;
+}
+
+.hr {
+	width: 70%;
+	background-color: #14805e;
+	height: 0.1em;
+}

@@ -5,46 +5,55 @@
 
 <div id="divbanco">
 
-	<form action="<%=ControllerPaths.USUARIO%>" method="post">
+	<div class="contenedor-grey">
 
-		<c:set var="parameterErrors" scope="page"
-			value="${errors.showErrors(ParameterNames.ACTION)}" />
-		<c:forEach var="e" items="${parameterErrors}">
-			<li><fmt:message key="${e}" bundle="${messages}" /></li>
-		</c:forEach>
+		<div class="green">
+			<h2>
+				<fmt:message key="retirar" bundle="${messages}" />
+			</h2>
+		</div>
 
-		<input type="hidden" name="<%=ParameterNames.ACTION%>"
-			value="<%=Actions.RETIRAR%>" />
+		<form action="<%=ControllerPaths.USUARIO%>" method="post">
 
+			<c:set var="parameterErrors" scope="page"
+				value="${errors.showErrors(ParameterNames.ACTION)}" />
+			<c:forEach var="e" items="${parameterErrors}">
+				<li class="fallada"><fmt:message key="${e}"
+						bundle="${messages}" /></li>
+			</c:forEach>
 
-		<div class="cuadroform">
-			<label><fmt:message key="email" bundle="${messages}" /> </label> <input type="text"
-				name="<%=ParameterNames.IBAN%>" placeholder="Iban" />
-				
+			<input type="hidden" name="<%=ParameterNames.ACTION%>"
+				value="<%=Actions.RETIRAR%>" /> <label><fmt:message
+					key="email" bundle="${messages}" /> </label> <input class="my-input"
+				type="text" name="<%=ParameterNames.IBAN%>" placeholder="Iban" />
+
 			<c:set var="parameterErrors" scope="page"
 				value="${errors.showErrors(ParameterNames.IBAN)}" />
 			<c:forEach var="e" items="${parameterErrors}">
-				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+				<li class="fallada"><fmt:message key="${e}"
+						bundle="${messages}" /></li>
 			</c:forEach>
 
-		</div>
-		<div class="cuadroform">
-			<label><fmt:message key="cantidad" bundle="${messages}" />: </label> <input type="text" placeholder="1.0"
+			<label><fmt:message key="cantidad" bundle="${messages}" />:
+			</label> <input class="my-input" type="text" placeholder="1.0"
 				name="<%=ParameterNames.CANTIDAD%>" />
 			<c:set var="parameterErrors" scope="page"
 				value="${errors.showErrors(ParameterNames.CANTIDAD)}" />
 			<c:forEach var="e" items="${parameterErrors}">
-				<li><fmt:message key="${e}" bundle="${messages}" /></li>
+				<li class="fallada"><fmt:message key="${e}"
+						bundle="${messages}" /></li>
 			</c:forEach>
-			
+
 			<p>
 				<fmt:message key="maxcant" bundle="${messages}" />
-				${sessionScope['user'].getBanco()}</p>
-		</div>
+				${sessionScope['user'].getBanco()}
+			</p>
 
-		<button type="submit"><fmt:message key="retirar" bundle="${messages}" /></button>
-	</form>
+			<input class="my-input" type="submit"
+				value="<fmt:message key="retbttn" bundle="${messages}" />">
+		</form>
 
+	</div>
 </div>
 
 

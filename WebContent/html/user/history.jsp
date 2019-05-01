@@ -9,28 +9,39 @@
 		if (apuestas != null) {
 			if (apuestas.isEmpty()) {
 	%>
-	<p>
+	<div class="contenedor-header">
+	<p class="pendiente">
 		<fmt:message key="notFound" bundle="${messages}" />
 	</p>
+	</div>
 	<%
 		}
 		}
 
 		if (apuestas == null) {
 	%>
+	<div class="contenedor-header">
 	<p>
 		<fmt:message key="notCrit" bundle="${messages}" />
 	</p>
+	</div>
 	<%
 		}
 	%>
-
+	
+	
+	<div class="contenedor-grey">
+	<div class="green">
+				<h2>
+					<fmt:message key="history" bundle="${messages}" />
+				</h2>
+	</div>
 
 	<c:if test="${not empty resultados}">
 		<c:forEach var="a" items="${resultados}">
 
 			<div class="apuestahistorial">
-				<p class="fechaapuesta">${DateUtils.WITH_HOUR_FORMAT.format(a.getFecha())}</p>
+				<p class="fechaapuesta">${DateUtils.WITH_SECOND_FORMAT.format(a.getFecha())}</p>
 				<p class="idapuesta">
 					<fmt:message key="betId" bundle="${messages}" /> ${a.getIdApuesta()}
 				</p>
@@ -74,7 +85,7 @@
 				</div>
 			</div>
 		</c:forEach>
-
+		
 
 
 		<!-- Paxinacion -->
@@ -124,5 +135,5 @@
 		</center>
 		</p>
 	</c:if>
-
+</div>
 </div>

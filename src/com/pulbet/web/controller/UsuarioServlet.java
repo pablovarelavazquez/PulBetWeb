@@ -127,13 +127,16 @@ public class UsuarioServlet extends HttpServlet {
 
 			if (u == null) {
 				errors.addError(ParameterNames.ACTION,ErrorCodes.AUTHENTICATION_ERROR);	
+				errors.addError(ParameterNames.PASSWORD, ErrorCodes.NOT_CORRECT);
 			}
 
 			if (errors.hasErrors()) {	
 				if (logger.isDebugEnabled()) {
 					logger.debug("Autenticacion fallida: {}", errors);
 				}
-				request.setAttribute(AttributeNames.ERRORS, errors);				
+				url = HttpUtils.createLinkToSelf(null, mapa);
+				request.setAttribute(AttributeNames.ERRORS, errors);
+				request.setAttribute(ParameterNames.URL, url);
 				target = ViewPaths.LOGIN;				
 			} else {				
 				SessionManager.set(request, SessionAttributeNames.USER, u);		
@@ -332,7 +335,9 @@ public class UsuarioServlet extends HttpServlet {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Fallo en el registro: {}", errors);
 				}
-				request.setAttribute(AttributeNames.ERRORS, errors);				
+				url = HttpUtils.createLinkToSelf(null, mapa);
+				request.setAttribute(AttributeNames.ERRORS, errors);
+				request.setAttribute(ParameterNames.URL, url);				
 				target = "/usuario?"+ParameterNames.ACTION+"="+Actions.PRE_REGISTRO;				
 			} else {				
 				SessionManager.set(request, SessionAttributeNames.USER, u);		
@@ -342,10 +347,8 @@ public class UsuarioServlet extends HttpServlet {
 
 
 		} 	else if (Actions.CHANGE_LOCALE.equalsIgnoreCase(action)) {
-
+			
 			String localeName = request.getParameter(ParameterNames.LOCALE);
-			// Recordar que hay que validar... lo que nos envian, incluso en algo como esto.
-			// Buscamos entre los Locale soportados por la web:
 			List<Locale> results = LocaleManager.getMatchedLocales(localeName);
 			Locale newLocale = null;
 			if (results.size()>0) {
@@ -532,8 +535,6 @@ public class UsuarioServlet extends HttpServlet {
 
 				}
 
-
-
 			} catch (DataException e) {
 				logger.warn(e.getMessage(),e);
 			}
@@ -622,7 +623,9 @@ public class UsuarioServlet extends HttpServlet {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Fallo en la edicion: {}", errors);
 				}
-				request.setAttribute(AttributeNames.ERRORS, errors);				
+				url = HttpUtils.createLinkToSelf(null, mapa);
+				request.setAttribute(AttributeNames.ERRORS, errors);
+				request.setAttribute(ParameterNames.URL, url);;				
 				target = "/usuario?"+ParameterNames.ACTION+"="+Actions.PRE_EDIT;				
 			} else {				
 
