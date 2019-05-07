@@ -120,8 +120,8 @@ body, html {
 
 #desplegable {
 	position: absolute;
-	width: 100px;
-	height: 100px;
+	width: 80px;
+	height: 80px;
 	top: 15px;
 	right: 0px;
 }
@@ -144,11 +144,11 @@ body, html {
 	width: 160px;
 	height: 20px;
 	border: none;
-	color: #4acfa5;
+	color: white;
 }
 
 #login input::placeholder {
-	color: #4acfa5;
+	color: #d4d1d1;
 }
 
 #login button {
@@ -200,16 +200,16 @@ body, html {
 }
 
 #carrito {
-	position: absolute;
-	font-size: 10px;
-	margin-right: 2%;
-	margin-top: 1%;
-	background: #545454;
-	width: 20%;
-	top: 20%;
-	right: 0%;
-	color: white;
-	border-radius:5px;
+    position: absolute;
+    font-size: 10px;azz
+    margin-right: 3%;
+    margin-top: 2%;
+    background: #545454;
+    width: 20%;
+    top: 20%;
+    right: 0%;
+    color: white;
+    border-radius: 5px;
 }
 
 .lineacarrito {
@@ -300,6 +300,11 @@ body, html {
 	color: white;
 }
 
+#history a {
+	text-decoration: none;
+    color: white;
+}
+
 .results a:hover {
 	text-decoration: none;
 	color: #ffdf1b;
@@ -372,6 +377,7 @@ li, ul {
 	position: relative;
 	margin-top: 0px;
 	min-height: 20%;
+	
 	text-align: center;
 }
 
@@ -563,7 +569,7 @@ li, ul {
     display: table;
     clear: both;
     padding: 0.01em 16px;
-    width: 60%;
+    /*width: 60%;*/
     margin-left: auto;
     margin-right: auto;
     border-radius: 5px;

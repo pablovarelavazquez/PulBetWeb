@@ -24,7 +24,7 @@
 
 			<input type="hidden" name="<%=ParameterNames.ACTION%>"
 				value="<%=Actions.RETIRAR%>" /> <label><fmt:message
-					key="email" bundle="${messages}" /> </label> <input class="my-input"
+					key="iban" bundle="${messages}" /> </label> <input class="my-input"
 				type="text" name="<%=ParameterNames.IBAN%>" placeholder="Iban" />
 
 			<c:set var="parameterErrors" scope="page"

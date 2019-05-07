@@ -300,6 +300,8 @@ public class UsuarioServlet extends HttpServlet {
 				fechanac = calendar.getTime(); 
 				u.setFechaNacimiento(fechanac);
 			}
+			
+			u.setBanco(0.0d);
 
 			d.setCiudad(ValidationUtils.namesOnlyLettersValidator(cidade,errors,ParameterNames.CIDADE, true));
 			d.setIdProvincia(ValidationUtils.longValidator(provincia,errors,ParameterNames.PROVINCIA, true));
@@ -626,7 +628,7 @@ public class UsuarioServlet extends HttpServlet {
 				}
 				url = HttpUtils.createLinkToSelf(null, mapa);
 				request.setAttribute(AttributeNames.ERRORS, errors);
-				request.setAttribute(ParameterNames.URL, url);;				
+				request.setAttribute(ParameterNames.URL, url);			
 				target = "/usuario?"+ParameterNames.ACTION+"="+Actions.PRE_EDIT;				
 			} else {				
 
@@ -689,8 +691,10 @@ public class UsuarioServlet extends HttpServlet {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Fallo en la edicion: {}", errors);
 				}
-				request.setAttribute(AttributeNames.ERRORS, errors);				
-				target = ViewPaths.EDITPROFILE;				
+				url = HttpUtils.createLinkToSelf(null, mapa);
+				request.setAttribute(AttributeNames.ERRORS, errors);
+				request.setAttribute(ParameterNames.URL, url);			
+				target = "/usuario?"+ParameterNames.ACTION+"="+Actions.PRE_EDIT;			
 			} else {				
 				SessionManager.set(request, SessionAttributeNames.USER, u);		
 				target = ViewPaths.HOME;				
@@ -717,9 +721,10 @@ public class UsuarioServlet extends HttpServlet {
 					target = ViewPaths.HOME;
 					redirect = true;
 				} else {
-
+					url = HttpUtils.createLinkToSelf(null, mapa);
 					request.setAttribute(AttributeNames.ERRORS, errors);
-					target = ViewPaths.INGRESAR;
+					request.setAttribute(ParameterNames.URL, url);			
+					target = ViewPaths.INGRESAR;		
 				}
 
 			} catch (DataException e) {
@@ -748,12 +753,13 @@ public class UsuarioServlet extends HttpServlet {
 
 			} 
 
-
 			if (errors.hasErrors()) {	
 				if (logger.isDebugEnabled()) {
 					logger.debug("Fallo en retirar: {}", errors);
 				}
-				request.setAttribute(AttributeNames.ERRORS, errors);				
+				url = HttpUtils.createLinkToSelf(null, mapa);
+				request.setAttribute(AttributeNames.ERRORS, errors);
+				request.setAttribute(ParameterNames.URL, url);			
 				target = ViewPaths.RETIRAR;				
 			} else {		
 				try {

@@ -90,7 +90,6 @@ public class ApuestaServlet extends HttpServlet {
 			double ganancias = 1.0;
 			String importeValue = request.getParameter(ParameterNames.IMPORTE);
 			Double importe = Double.valueOf(importeValue);
-			//String ganancias = request.getParameter(ParameterNames.GANANCIAS);
 			
 			Date actual  = new Date();
 
@@ -126,9 +125,6 @@ public class ApuestaServlet extends HttpServlet {
 					logger.warn(e.getMessage(),e);
 				}
 				
-				//mail de apuesta realizada
-				
-				//Esto valeira o carrito, non sei se e o mais axeitado.
 				c.setLineas(lineasCarrito);
 				
 				SessionManager.set(request, SessionAttributeNames.USER, u);
@@ -140,7 +136,7 @@ public class ApuestaServlet extends HttpServlet {
 				request.setAttribute(AttributeNames.ERRORS, errors);			
 				
 				if(logger.isDebugEnabled()) {
-					logger.debug("Error creando apuesta");
+					logger.debug("Error creando apuesta, usuario no logueado");
 				}
 				
 				target=ViewPaths.LOGIN;
@@ -149,8 +145,9 @@ public class ApuestaServlet extends HttpServlet {
 			} else if (u.getBanco()<importe) {
 				errors.addError(ParameterNames.ACTION, ErrorCodes.NOT_ENOUGH_MONEY);
 				request.setAttribute(AttributeNames.ERRORS, errors);
+				
 				if(logger.isDebugEnabled()) {
-					logger.debug("Error creando apuesta");
+					logger.debug("Error creando apuesta, sin dinero suficiente");
 				}
 				
 				target=ViewPaths.INGRESAR;
@@ -170,6 +167,7 @@ public class ApuestaServlet extends HttpServlet {
 			Resultado r = null;
 			Long l = null;
 			String fecha = null;
+			String mensaje = null;
 			try {
 				
 				
@@ -189,6 +187,32 @@ public class ApuestaServlet extends HttpServlet {
 							linea.addProperty("tipoResultado", tr.getNome());
 						}
 					}
+					
+					if(idioma.equals("ESP") || idioma.equals("GAL")) {
+						if(la.getProcesado() == 1) {
+							linea.addProperty("mensaje", "ACERTADA");
+							linea.addProperty("clase", "acertada");
+						} else if(la.getProcesado() == 2) {
+							linea.addProperty("mensaje", "FALLADA");
+							linea.addProperty("clase", "fallada");
+						} else {
+							linea.addProperty("mensaje", "PENDIENTE");
+							linea.addProperty("clase", "pendiente");
+						}
+					} else if (idioma.equals("ENG")) {
+						if(la.getProcesado() == 1) {
+							linea.addProperty("mensaje", "WINNED");
+							linea.addProperty("clase", "acertada");
+						} else if(la.getProcesado() == 2) {
+							linea.addProperty("mensaje", "LOSED");
+							linea.addProperty("clase", "fallada");
+						} else {
+							linea.addProperty("mensaje", "ACTIVE");
+							linea.addProperty("clase", "pendiente");
+						}
+					}
+					
+					
 					
 					linea.addProperty("estado", la.getProcesado());
 					linea.addProperty("resultado", r.getNombre());

@@ -169,13 +169,7 @@ $(document).ready(function () {
 
 						for(var i = 0; i < lineasArray.length; i++){
 							
-							if(lineasArray[i].estado == 1) {
-								estediv.find(".fillo").html(estediv.find(".fillo").html()+"<div class='lineadetalle'><p class='detres'>"+lineasArray[i].resultado+"</p><p class='detcuot'> Cuota: "+lineasArray[i].cuota+"</p><p class='detev'>"+lineasArray[i].local+" VS "+lineasArray[i].visitante+"  "+lineasArray[i].fecha+"</p></p><p class='dettipres'>"+lineasArray[i].tipoResultado+"</p><p class='detest acertada'>ACERTADA</p></div>");
-							} else if(lineasArray[i].estado == 2){
-								estediv.find(".fillo").html(estediv.find(".fillo").html()+"<div class='lineadetalle'><p class='detres'>"+lineasArray[i].resultado+"</p><p class='detcuot'> Cuota: "+lineasArray[i].cuota+"</p><p class='detev'>"+lineasArray[i].local+" VS "+lineasArray[i].visitante+"  "+lineasArray[i].fecha+"</p></p><p class='dettipres'>"+lineasArray[i].tipoResultado+"</p><p class='detest fallada'>FALLADA</p></div>");
-							} else {
-								estediv.find(".fillo").html(estediv.find(".fillo").html()+"<div class='lineadetalle'><p class='detres'>"+lineasArray[i].resultado+"</p><p class='detcuot'> Cuota: "+lineasArray[i].cuota+"</p><p class='detev'>"+lineasArray[i].local+" VS "+lineasArray[i].visitante+"  "+lineasArray[i].fecha+"</p></p><p class='dettipres'>"+lineasArray[i].tipoResultado+"</p><p class='detest pendiente'>PENDIENTE</p></div>");
-							}
+								estediv.find(".fillo").html(estediv.find(".fillo").html()+"<div class='lineadetalle'><p class='detres'>"+lineasArray[i].resultado+"</p><p class='detcuot'> Cuota: "+lineasArray[i].cuota+"</p><p class='detev'>"+lineasArray[i].local+" VS "+lineasArray[i].visitante+"  "+lineasArray[i].fecha+"</p></p><p class='dettipres'>"+lineasArray[i].tipoResultado+"</p><p class='detest "+lineasArray[i].clase+"'>"+lineasArray[i].mensaje+"</p></div>");
 							
 						}
 					}

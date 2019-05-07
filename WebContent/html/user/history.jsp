@@ -94,8 +94,7 @@
 
 			<!-- A la anterior pagina -->
 			<c:if test="${page > 1}">
-				<a href="${url}&page=${page - 1}"> <fmt:message key="Anterior"
-						bundle="${messages}" />
+				<a href="${url}&page=${page - 1}"> <fmt:message key="anterior" bundle="${messages}" />
 				</a>
 			&nbsp;&nbsp;
 			</c:if>

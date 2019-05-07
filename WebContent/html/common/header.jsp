@@ -20,6 +20,9 @@
 <script src="<%=request.getContextPath()%>/javascript/jquery-3.3.1.min.js" type="text/javascript"></script> 
 <script type="text/javascript" src="<%=request.getContextPath()%>/javascript/web.js"></script>
 
+<link rel="icon" size="32x32" type="image/png" href="<%=request.getContextPath()%>/images/FaviconPulBet.png"/>
+
+<title>PulBET - Para los amantes del deporte</title>
 
 </head>
 <c:set var="errors" scope="page" value ="${errors}"/>
