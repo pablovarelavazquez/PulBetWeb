@@ -25,6 +25,7 @@ import com.pulbet.web.util.LocaleManager;
 import com.pulbet.web.util.ParameterUtils;
 import com.pulbet.web.util.SessionAttributeNames;
 import com.pulbet.web.util.SessionManager;
+import com.pulbet.web.util.ValidationUtils;
 import com.pulbet.web.util.WebConstants;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
@@ -83,18 +84,22 @@ public class ApuestaServlet extends HttpServlet {
 		
 		if(Actions.APOSTAR.equalsIgnoreCase(action)){
 			
+			//Recuperamos parametros y validamos.
+			String importeValue = request.getParameter(ParameterNames.IMPORTE);
+			importeValue = importeValue.replace(',', '.');
+			Double importe = ValidationUtils.doubleValidator(importeValue, errors, ParameterNames.IMPORTE, true);
+			
+			Date actual  = new Date();
 			Apuesta a = new Apuesta();
 			List<LineaApuesta> lineas = new ArrayList<LineaApuesta>();
 			List<LineaCarrito> lineasCarrito = new ArrayList<LineaCarrito>();
 			int count = 1;
 			double ganancias = 1.0;
-			String importeValue = request.getParameter(ParameterNames.IMPORTE);
-			Double importe = Double.valueOf(importeValue);
 			
-			Date actual  = new Date();
-
+			//Si tenemos iniciada sesion, dinero en el banco y el importe es mayor que 0.
+			if ((u != null) && (u.getBanco()>= importe) && (importe > 0.0)) {
 			
-			if ((u != null) && (u.getBanco()>= importe)) {
+				//Recuperamos lineas del carrito de sesion
 				for(LineaCarrito lc : c.getLineas()) {
 					LineaApuesta la = new LineaApuesta();
 					la.setIdEvento(lc.getEvento().getIdEvento());
@@ -114,10 +119,17 @@ public class ApuestaServlet extends HttpServlet {
 				a.setGanancias(ganancias);
 				
 				try {
+					//Creamos la apuesta
 					apuestaService.create(a);
+					
+					//Retiramos el dinero apostado del banco del usuario
 					bancoService.retirar(a.getIdUsuario(), a.getImporte());
 					
+					//Recuperamos el usuario actualizado para incluir en sesion
 					u = usuarioService.findById(u.getIdUsuario());
+					
+					c.setLineas(lineasCarrito);
+					SessionManager.set(request, SessionAttributeNames.USER, u);
 
 				} catch (DuplicateInstanceException e) {
 					logger.warn(e.getMessage(),e);
@@ -125,12 +137,11 @@ public class ApuestaServlet extends HttpServlet {
 					logger.warn(e.getMessage(),e);
 				}
 				
-				c.setLineas(lineasCarrito);
 				
-				SessionManager.set(request, SessionAttributeNames.USER, u);
 				target="";
 				redirect = true;
 
+			//Sin sesion iniciada
 			} else if (u == null){ 
 				errors.addError(ParameterNames.ACTION, ErrorCodes.NOT_LOGGED);
 				request.setAttribute(AttributeNames.ERRORS, errors);			
@@ -141,7 +152,7 @@ public class ApuestaServlet extends HttpServlet {
 				
 				target=ViewPaths.LOGIN;
 				
-				
+			//Sin dinero en el banco	
 			} else if (u.getBanco()<importe) {
 				errors.addError(ParameterNames.ACTION, ErrorCodes.NOT_ENOUGH_MONEY);
 				request.setAttribute(AttributeNames.ERRORS, errors);
@@ -151,6 +162,17 @@ public class ApuestaServlet extends HttpServlet {
 				}
 				
 				target=ViewPaths.INGRESAR;
+				
+			//Importe 0	
+			} else if (importe <= 0.0) {
+				errors.addError(ParameterNames.ACTION, ErrorCodes.NOT_ENOUGH);
+				request.setAttribute(AttributeNames.ERRORS, errors);
+				
+				if(logger.isDebugEnabled()) {
+					logger.debug("Error creando apuesta, importe 0");
+				}
+				
+				target="";
 			}
 						
 			

@@ -28,9 +28,14 @@ body, html {
 
 #languages {
 	font-size: 12px;
-	position: absolute;
-	left: 45%;
-	top: 35px;
+    position: absolute;
+    left: 5%;
+    top: 75%;
+}
+
+#languages img {
+	width: 16px;
+    height: 10px;
 }
 
 #languages a {
@@ -201,7 +206,7 @@ body, html {
 
 #carrito {
     position: absolute;
-    font-size: 10px;azz
+    font-size: 10px;
     margin-right: 3%;
     margin-top: 2%;
     background: #545454;
@@ -377,7 +382,6 @@ li, ul {
 	position: relative;
 	margin-top: 0px;
 	min-height: 20%;
-	
 	text-align: center;
 }
 

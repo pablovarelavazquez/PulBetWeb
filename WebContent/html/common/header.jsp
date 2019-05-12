@@ -34,8 +34,6 @@
 			<a href="<%=request.getContextPath()%>"><img src="<%=request.getContextPath()%>/images/LogoPulBet.png"></a>
 		</div>
 		
-		
-
 		<%@include file="/html/common/languages.jsp"%>
 
 		<%@include file="/html/common/user-menu.jsp"%>

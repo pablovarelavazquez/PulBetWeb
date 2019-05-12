@@ -20,4 +20,6 @@ public interface ErrorCodes {
 	public static final String NOT_EQUALS = "NOT_EQUALS";
 	public static final String NOT_CORRECT = "NOT_CORRECT";
 	
+	public static final String NOT_ENOUGH = "NOT_ENOUGH";
+	
 }
