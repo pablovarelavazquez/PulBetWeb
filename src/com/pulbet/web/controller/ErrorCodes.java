@@ -6,7 +6,7 @@ public interface ErrorCodes {
 	public static final String FIND_ERROR = "FIND_ERROR";
 	
 	public static final String MANDATORY_PARAMETER = "MANDATORY_PARAMETER";
-	public static final String REGISTER_ERROR = "REGISTER_PARAMETER";
+	public static final String REGISTER_ERROR = "REGISTER_ERROR";
 	public static final String EDIT_PROFILE_ERROR = "EDIT_PROFILE_ERROR";
 	public static final String NOT_VALID_FORMAT = "NOT_VALID_FORMAT";
 	
